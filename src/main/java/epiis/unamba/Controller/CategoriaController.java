@@ -2,6 +2,9 @@ package epiis.unamba.Controller;
 
 import java.util.List;
 
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import epiis.unamba.Model.Categoria;
@@ -40,7 +43,18 @@ public class CategoriaController {
     }
 
     @DeleteMapping("/{id}")
-    public boolean eliminar(@PathVariable Long id) {
-        return catService.eliminar(id);
+    public ResponseEntity<String> eliminar(@PathVariable Long id) {
+        try {
+            boolean eliminado = catService.eliminar(id);
+            if (eliminado) {
+                return ResponseEntity.ok("Producto eliminado correctamente");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                     .body("Producto no encontrado");
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                 .body(e.getMessage());
+        }
     }
 }

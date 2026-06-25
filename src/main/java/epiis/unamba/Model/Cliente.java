@@ -24,13 +24,13 @@ public class Cliente {
 	private String nombre;
 	
 	@Column(nullable=false, length=100)
-	private String Apellido;
+	private String apellido;
 	
 	@Column(nullable=false, unique=true, length=150)
 	private String correo;
 	
 	@Column(length=20)
-	private String Telefono;
+	private String telefono;
 	
 	@Column(length=255)
 	private String direccion;
@@ -64,11 +64,11 @@ public class Cliente {
 	}
 
 	public String getApellido() {
-		return Apellido;
+		return apellido;
 	}
 
 	public void setApellido(String apellido) {
-		Apellido = apellido;
+		this.apellido = apellido;
 	}
 
 	public String getCorreo() {
@@ -80,11 +80,11 @@ public class Cliente {
 	}
 
 	public String getTelefono() {
-		return Telefono;
+		return telefono;
 	}
 
 	public void setTelefono(String telefono) {
-		Telefono = telefono;
+		this.telefono = telefono;
 	}
 
 	public String getDireccion() {
