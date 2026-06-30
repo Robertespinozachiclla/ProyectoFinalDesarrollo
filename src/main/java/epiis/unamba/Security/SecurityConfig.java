@@ -11,23 +11,27 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
+    private final JwtFilter jwtFilter;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(
+            CustomUserDetailsService userDetailsService,
+            JwtFilter jwtFilter) {
+
         this.userDetailsService = userDetailsService;
+        this.jwtFilter = jwtFilter;
     }
 
-    // Encriptador de contraseñas
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Proveedor de autenticación
     @Bean
     AuthenticationProvider authenticationProvider() {
 
@@ -39,42 +43,36 @@ public class SecurityConfig {
         return provider;
     }
 
-    // AuthenticationManager
     @Bean
     AuthenticationManager authenticationManager(
             AuthenticationConfiguration config)
             throws Exception {
 
         return config.getAuthenticationManager();
-
     }
 
-    // Configuración de seguridad
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
 
         http
+                .csrf(csrf -> csrf.disable())
 
-            .csrf(csrf -> csrf.disable())
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            .sessionManagement(session ->
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
 
-            .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
 
-                    // Rutas públicas
-                    .requestMatchers("/api/auth/**").permitAll()
+                        .anyRequest().authenticated())
 
-                    // Todas las demás requieren autenticación
-                    .anyRequest().authenticated()
+                .authenticationProvider(authenticationProvider())
 
-            )
-
-            .authenticationProvider(authenticationProvider());
+                .addFilterBefore(jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-
     }
 
 }
