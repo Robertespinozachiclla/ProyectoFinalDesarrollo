@@ -1,11 +1,11 @@
-package epiis.unamba.Service;
+package epiis.unamba.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import epiis.unamba.Repository.CategoriaRepository;
-import epiis.unamba.Model.Categoria;
+import epiis.unamba.repository.CategoriaRepository;
+import epiis.unamba.model.Categoria;
 
 @Service
 public class CategoriaService {

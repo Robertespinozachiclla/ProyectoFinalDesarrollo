@@ -1,8 +1,9 @@
 package epiis.unamba.DTO;
 
-import epiis.unamba.Model.Rol;
+import epiis.unamba.model.Rol;
 
 public class RegisterRequest {
+	
 	private String username;
     private String password;
     private Rol rol;

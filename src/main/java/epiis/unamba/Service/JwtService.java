@@ -1,4 +1,4 @@
-package epiis.unamba.Service;
+package epiis.unamba.service;
 
 import java.nio.charset.StandardCharsets;
 import javax.crypto.SecretKey;
@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Service;
 
-import epiis.unamba.Model.Usuario;
+import epiis.unamba.model.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

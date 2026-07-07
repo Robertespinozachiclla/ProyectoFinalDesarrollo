@@ -1,10 +1,10 @@
-package epiis.unamba.Service;
+package epiis.unamba.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import epiis.unamba.Model.Producto;
-import epiis.unamba.Repository.ProductoRepository;
+import epiis.unamba.model.Producto;
+import epiis.unamba.repository.ProductoRepository;
 
 @Service
 public class ProductoService {

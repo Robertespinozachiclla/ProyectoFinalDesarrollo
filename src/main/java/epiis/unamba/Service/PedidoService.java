@@ -1,10 +1,10 @@
-package epiis.unamba.Service;
+package epiis.unamba.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import epiis.unamba.Model.Pedido;
-import epiis.unamba.Repository.PedidoRepository;
+import epiis.unamba.model.Pedido;
+import epiis.unamba.repository.PedidoRepository;
 
 @Service
 public class PedidoService {

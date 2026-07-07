@@ -1,12 +1,12 @@
-package epiis.unamba.Service;
+package epiis.unamba.service;
 
 import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import epiis.unamba.Model.Usuario;
-import epiis.unamba.Repository.UsuarioRepository;
+import epiis.unamba.model.Usuario;
+import epiis.unamba.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {

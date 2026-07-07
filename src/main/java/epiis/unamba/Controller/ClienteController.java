@@ -1,11 +1,13 @@
-package epiis.unamba.Controller;
+package epiis.unamba.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import epiis.unamba.Model.Cliente;
-import epiis.unamba.Service.ClienteService;
+import epiis.unamba.model.Cliente;
+import epiis.unamba.service.ClienteService;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -40,7 +42,18 @@ public class ClienteController {
     }
 
     @DeleteMapping("/{id}")
-    public boolean eliminar(@PathVariable Long id) {
-        return cliService.eliminar(id);
+    public ResponseEntity<String> eliminar(@PathVariable Long id) {
+        try {
+            boolean eliminado = cliService.eliminar(id);
+            if (eliminado) {
+                return ResponseEntity.ok("Producto eliminado correctamente");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                     .body("Producto no encontrado");
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                 .body(e.getMessage());
+        }
     }
 }

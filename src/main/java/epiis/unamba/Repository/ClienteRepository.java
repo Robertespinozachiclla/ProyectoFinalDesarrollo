@@ -1,7 +1,7 @@
-package epiis.unamba.Repository;
+package epiis.unamba.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import epiis.unamba.Model.Cliente;
+import epiis.unamba.model.Cliente;
 
 public interface ClienteRepository 
 	extends JpaRepository<Cliente, Long>{

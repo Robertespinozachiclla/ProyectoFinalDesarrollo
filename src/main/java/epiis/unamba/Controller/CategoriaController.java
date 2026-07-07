@@ -1,4 +1,4 @@
-package epiis.unamba.Controller;
+package epiis.unamba.controller;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import epiis.unamba.Model.Categoria;
-import epiis.unamba.Service.CategoriaService;
+import epiis.unamba.model.Categoria;
+import epiis.unamba.service.CategoriaService;
 
 @RestController
 @RequestMapping("/api/categorias")

@@ -1,4 +1,4 @@
-package epiis.unamba.Model;
+package epiis.unamba.model;
 
 public enum Rol {
     ADMIN,

@@ -1,7 +1,7 @@
-package epiis.unamba.Repository;
+package epiis.unamba.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import epiis.unamba.Model.DetallePedido;
+import epiis.unamba.model.DetallePedido;
 
 public interface DetallePedidoRepository 
 	extends JpaRepository<DetallePedido, Long>{

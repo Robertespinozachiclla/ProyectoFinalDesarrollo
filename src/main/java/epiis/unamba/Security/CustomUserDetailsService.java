@@ -1,4 +1,4 @@
-package epiis.unamba.Security;
+package epiis.unamba.security;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import epiis.unamba.Model.Usuario;
-import epiis.unamba.Repository.UsuarioRepository;
+import epiis.unamba.model.Usuario;
+import epiis.unamba.repository.UsuarioRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

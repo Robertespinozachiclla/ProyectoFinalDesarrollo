@@ -1,4 +1,4 @@
-package epiis.unamba.Controller;
+package epiis.unamba.controller;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import epiis.unamba.Model.Producto;
-import epiis.unamba.Service.ProductoService;
+import epiis.unamba.model.Producto;
+import epiis.unamba.service.ProductoService;
 
 @RestController
 @RequestMapping("/api/productos")

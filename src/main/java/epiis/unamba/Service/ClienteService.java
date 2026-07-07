@@ -1,11 +1,11 @@
-package epiis.unamba.Service;
+package epiis.unamba.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import epiis.unamba.Model.Cliente;
-import epiis.unamba.Repository.ClienteRepository;
+import epiis.unamba.model.Cliente;
+import epiis.unamba.repository.ClienteRepository;
 
 @Service
 public class ClienteService {

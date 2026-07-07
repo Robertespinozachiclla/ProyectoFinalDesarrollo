@@ -1,4 +1,4 @@
-package epiis.unamba.Controller;
+package epiis.unamba.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import epiis.unamba.DTO.AuthResponse;
 import epiis.unamba.DTO.LoginRequest;
 import epiis.unamba.DTO.RegisterRequest;
-import epiis.unamba.Model.Usuario;
-import epiis.unamba.Service.AuthService;
+import epiis.unamba.model.Usuario;
+import epiis.unamba.service.AuthService;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -23,18 +23,30 @@ public class AuthController {
 
     // Registrar usuario
     @PostMapping("/register")
-    public ResponseEntity<Usuario> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
 
         Usuario usuario = authService.registrar(request);
 
-        return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            java.util.Map.of(
+                "mensaje", "Usuario registrado correctamente",
+                "usuario", usuario
+            )
+        );
     }
 
     // Iniciar sesión
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-        return ResponseEntity.ok(authService.login(request));
+        AuthResponse response = authService.login(request);
+
+        return ResponseEntity.ok(
+            java.util.Map.of(
+                "mensaje", "Inicio de sesión exitoso",
+                "token", response.getToken()
+            )
+        );
     }
 
 }

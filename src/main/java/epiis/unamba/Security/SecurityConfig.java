@@ -1,7 +1,8 @@
-package epiis.unamba.Security;
+package epiis.unamba.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 @Configuration
 public class SecurityConfig {
@@ -52,25 +54,58 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+SecurityFilterChain securityFilterChain(HttpSecurity http)
+        throws Exception {
 
-        http
-                .csrf(csrf -> csrf.disable())
+    http
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .csrf(csrf -> csrf.disable())
 
-                .authorizeHttpRequests(auth -> auth
+        .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                        .requestMatchers("/api/auth/**").permitAll()
+        .authorizeHttpRequests(auth -> auth
 
-                        .anyRequest().authenticated())
+                .requestMatchers("/api/auth/**").permitAll()
 
-                .authenticationProvider(authenticationProvider())
+                .requestMatchers(HttpMethod.GET,
+                        "/api/productos/**").permitAll()
 
-                .addFilterBefore(jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                .requestMatchers(HttpMethod.POST,
+                        "/api/productos/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.PUT,
+                        "/api/productos/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.DELETE,
+                        "/api/productos/**").hasRole("ADMIN")
+
+
+                .requestMatchers(HttpMethod.GET,
+                        "/api/categorias/**").permitAll()
+
+                .requestMatchers("/api/categorias/**")
+                .hasRole("ADMIN")
+
+
+                .requestMatchers("/api/pedidos/**")
+                .hasAnyRole("ADMIN","CLIENTE")
+
+                .requestMatchers("/api/detalle-pedidos/**")
+                .hasAnyRole("ADMIN","CLIENTE")
+
+
+                .requestMatchers("/api/clientes/**")
+                .hasAnyRole("ADMIN","CLIENTE")
+
+                .anyRequest().authenticated()
+
+        )
+
+        .authenticationProvider(authenticationProvider())
+
+        .addFilterBefore(jwtFilter,
+                UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

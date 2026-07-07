@@ -1,11 +1,11 @@
-package epiis.unamba.Controller;
+package epiis.unamba.controller;
 
 import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
-import epiis.unamba.Model.DetallePedido;
-import epiis.unamba.Service.DetallePedidoService;
+import epiis.unamba.model.DetallePedido;
+import epiis.unamba.service.DetallePedidoService;
 
 @RestController
 @RequestMapping("/api/detalle-pedidos")

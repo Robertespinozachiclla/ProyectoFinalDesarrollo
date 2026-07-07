@@ -1,4 +1,4 @@
-package epiis.unamba.Service;
+package epiis.unamba.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import epiis.unamba.DTO.AuthResponse;
 import epiis.unamba.DTO.LoginRequest;
 import epiis.unamba.DTO.RegisterRequest;
-import epiis.unamba.Model.Usuario;
-import epiis.unamba.Repository.UsuarioRepository;
+import epiis.unamba.model.Usuario;
+import epiis.unamba.repository.UsuarioRepository;
 
 @Service
 public class AuthService {
