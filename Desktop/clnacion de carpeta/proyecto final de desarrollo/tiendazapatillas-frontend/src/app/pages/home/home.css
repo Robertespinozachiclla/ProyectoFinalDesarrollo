@@ -1,0 +1,396 @@
+/*==========================
+    CONFIGURACIÓN GENERAL
+==========================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f5f5f5;
+}
+
+
+/*==========================
+        NAVBAR
+==========================*/
+
+.top-nav{
+
+    position:sticky;
+    top:0;
+
+    width:100%;
+
+    background:white;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:18px 60px;
+
+    box-shadow:0 2px 15px rgba(0,0,0,.08);
+
+    z-index:1000;
+
+}
+
+.logo{
+
+    font-size:30px;
+    font-weight:900;
+    color:#111;
+    letter-spacing:1px;
+
+}
+
+.logo span{
+
+    color:#ff3b30;
+
+}
+
+
+/*==========================
+      MENÚ
+==========================*/
+
+.nav-links{
+
+    display:flex;
+    gap:35px;
+
+}
+
+.nav-links a{
+
+    text-decoration:none;
+    color:#333;
+    font-weight:600;
+    font-size:16px;
+
+    transition:.3s;
+
+    position:relative;
+
+}
+
+.nav-links a:hover{
+
+    color:#ff3b30;
+
+}
+
+.nav-links a::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    bottom:-6px;
+
+    width:0%;
+    height:2px;
+
+    background:#ff3b30;
+
+    transition:.3s;
+
+}
+
+.nav-links a:hover::after{
+
+    width:100%;
+
+}
+
+.active{
+
+    color:#ff3b30 !important;
+
+}
+
+.sale-link{
+
+    color:red !important;
+    font-weight:bold;
+
+}
+
+
+/*==========================
+        ICONOS
+==========================*/
+
+.nav-icons{
+
+    display:flex;
+    gap:15px;
+
+}
+
+.nav-icons button{
+
+    width:42px;
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#f3f3f3;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    transition:.3s;
+
+}
+
+.nav-icons button:hover{
+
+    background:#ff3b30;
+    color:white;
+    transform:scale(1.1);
+
+}
+
+
+/*==========================
+      TITULO
+==========================*/
+
+.container{
+
+    width:95%;
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:50px 0;
+
+}
+
+.section-title{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    margin-bottom:40px;
+
+    color:#111;
+
+    border-left:6px solid #ff3b30;
+
+    padding-left:15px;
+
+}
+
+
+/*==========================
+     GRID PRODUCTOS
+==========================*/
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+
+    gap:35px;
+
+}
+
+
+/*==========================
+      TARJETAS
+==========================*/
+
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+    transition:.4s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-12px);
+
+    box-shadow:0 20px 35px rgba(0,0,0,.15);
+
+}
+
+
+/*==========================
+     IMAGEN PRODUCTO
+==========================*/
+
+.card-img{
+
+    height:240px;
+
+    background:linear-gradient(135deg,#ececec,#d7d7d7);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    color:#444;
+
+}
+
+
+/*==========================
+      CONTENIDO
+==========================*/
+
+.card-body{
+
+    padding:25px;
+
+}
+
+.badge{
+
+    background:#111;
+
+    color:white;
+
+    padding:5px 10px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+}
+
+.card-title{
+
+    margin-top:15px;
+
+    font-size:24px;
+
+    color:#111;
+
+}
+
+.card-desc{
+
+    margin:15px 0;
+
+    color:#777;
+
+    line-height:1.6;
+
+}
+
+
+/*==========================
+       PIE CARD
+==========================*/
+
+.card-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.price{
+
+    font-size:28px;
+
+    color:#ff3b30;
+
+    font-weight:bold;
+
+}
+
+.btn-add{
+
+    border:none;
+
+    background:#111;
+
+    color:white;
+
+    padding:12px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+}
+
+.btn-add:hover{
+
+    background:#ff3b30;
+
+}
+
+
+/*==========================
+      RESPONSIVE
+==========================*/
+
+@media(max-width:900px){
+
+    .top-nav{
+
+        flex-direction:column;
+
+        gap:20px;
+
+        padding:20px;
+
+    }
+
+    .nav-links{
+
+        flex-wrap:wrap;
+
+        justify-content:center;
+
+    }
+
+}
+
+@media(max-width:600px){
+
+    .grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}

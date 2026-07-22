@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ProyectofinalApplication<Proyectofinal>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "epiis.unamba.ProyectofinalApplication",
+            "projectName": "Proyectofinal",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
