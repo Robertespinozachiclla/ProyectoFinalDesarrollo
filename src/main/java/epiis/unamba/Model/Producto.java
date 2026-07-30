@@ -33,6 +33,10 @@ public class Producto {
     @Column(length=50)
     private String color;
 
+    // 👟 NUEVO CAMPO: Agregado para almacenar la talla o tallas
+    @Column(length=50)
+    private String talla;
+
     @ManyToOne
     @JoinColumn(name="categoria_id", nullable=false)
     private Categoria categoria;
@@ -47,85 +51,96 @@ public class Producto {
 
     public Producto() {}
 
-	public Long getId() {
-		return id;
-	}
+    // ==========================================
+    // GETTERS Y SETTERS
+    // ==========================================
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public String getNombre() {
+        return nombre;
+    }
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	public Double getPrecio() {
-		return precio;
-	}
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	public void setPrecio(Double precio) {
-		this.precio = precio;
-	}
+    public Double getPrecio() {
+        return precio;
+    }
 
-	public Integer getStock() {
-		return stock;
-	}
+    public void setPrecio(Double precio) {
+        this.precio = precio;
+    }
 
-	public void setStock(Integer stock) {
-		this.stock = stock;
-	}
+    public Integer getStock() {
+        return stock;
+    }
 
-	public String getMarca() {
-		return marca;
-	}
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
 
-	public void setMarca(String marca) {
-		this.marca = marca;
-	}
+    public String getMarca() {
+        return marca;
+    }
 
-	public String getColor() {
-		return color;
-	}
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
 
-	public void setColor(String color) {
-		this.color = color;
-	}
+    public String getColor() {
+        return color;
+    }
 
-	public Categoria getCategoria() {
-		return categoria;
-	}
+    public void setColor(String color) {
+        this.color = color;
+    }
 
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
-	}
+    // 👟 Getter y Setter agregados para "talla"
+    public String getTalla() {
+        return talla;
+    }
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
+    public void setTalla(String talla) {
+        this.talla = talla;
+    }
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
+    public Categoria getCategoria() {
+        return categoria;
+    }
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-    // Getters y Setters
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

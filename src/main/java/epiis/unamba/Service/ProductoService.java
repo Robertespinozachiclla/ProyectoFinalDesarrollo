@@ -8,26 +8,26 @@ import epiis.unamba.repository.ProductoRepository;
 
 @Service
 public class ProductoService {
-	private final ProductoRepository prodRepo;
-	
-	public ProductoService(ProductoRepository prodRepo) {
+    private final ProductoRepository prodRepo;
+    
+    public ProductoService(ProductoRepository prodRepo) {
         this.prodRepo = prodRepo;
     }
-	
-	public List<Producto> listar(){
-		return prodRepo.findAll();
-	}
-	
-	public Producto obtenerPorId(Long id) {
-		return prodRepo.findById(id)
-				.orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-	}
-	
-	public Producto guardar(Producto prod) {
-		return prodRepo.save(prod);
-	}
-	
-	public Producto actualizar(Long id, Producto prod) {
+    
+    public List<Producto> listar(){
+        return prodRepo.findAll();
+    }
+    
+    public Producto obtenerPorId(Long id) {
+        return prodRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+    }
+    
+    public Producto guardar(Producto prod) {
+        return prodRepo.save(prod);
+    }
+    
+    public Producto actualizar(Long id, Producto prod) {
         Producto existe = this.obtenerPorId(id);
         existe.setNombre(prod.getNombre());
         existe.setDescripcion(prod.getDescripcion());
@@ -35,6 +35,10 @@ public class ProductoService {
         existe.setStock(prod.getStock());
         existe.setMarca(prod.getMarca());
         existe.setColor(prod.getColor());
+        
+        // 👟 NUEVO: Actualización de talla
+        existe.setTalla(prod.getTalla());
+        
         return prodRepo.save(existe);
     }
 
@@ -52,6 +56,11 @@ public class ProductoService {
             existe.setMarca(prod.getMarca());
         if (prod.getColor() != null)
             existe.setColor(prod.getColor());
+            
+        // 👟 NUEVO: Actualización parcial de talla
+        if (prod.getTalla() != null)
+            existe.setTalla(prod.getTalla());
+            
         return prodRepo.save(existe);
     }
 

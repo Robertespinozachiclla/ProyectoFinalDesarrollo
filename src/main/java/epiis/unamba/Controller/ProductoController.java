@@ -42,7 +42,13 @@ public class ProductoController {
         return prodService.actualizar(id, producto);
     }
 
-   
+    @PatchMapping("/{id}")
+    public Producto actualizarParcial(
+            @PathVariable Long id,
+            @RequestBody Producto producto) {
+        return prodService.actualizarParcial(id, producto);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Long id) {
         try {

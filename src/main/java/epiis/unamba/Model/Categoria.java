@@ -1,15 +1,21 @@
 package epiis.unamba.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,6 +31,9 @@ public class Categoria {
 	
 	@Column(length =255)
 	private String descripcion;
+	@OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Evita recursión infinita en respuestas JSON
+    private List<Producto> productos = new ArrayList<>();
 	
 	@CreationTimestamp
 	@Column(name="created_at",updatable =false)
