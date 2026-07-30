@@ -33,34 +33,25 @@ export class LoginComponent {
   this.mensajeError = '';
 
   this.authService.login(this.credenciales).subscribe({
-    next: (res: any) => {
-      this.cargando = false;
+  next: (res: any) => {
+    this.cargando = false;
+    
+    // Guardamos token y rol
+    localStorage.setItem('token', res.token);
+    const rol = (res.rol || res.role || '').toUpperCase();
+    localStorage.setItem('role', rol);
 
-      // 🟢 VALIDACIÓN 1: Verificar si el backend envió un token/rol válido
-      if (!res || !res.token) {
-        this.mensajeError = 'Usuario o contraseña incorrectos.';
-        return;
-      }
-
-      // Si todo está bien, redirige según el rol
-      const rolObtenido = (res.rol || res.role || '').toUpperCase();
-      if (rolObtenido === 'ADMIN' || rolObtenido === 'ROLE_ADMIN') {
-        this.router.navigate(['/admin-dashboard']);
-      } else {
-        this.router.navigate(['/home']);
-      }
-    },
-    error: (err: any) => {
-      this.cargando = false;
-      console.error('Error de autenticación:', err);
-
-      // 🟢 Agregamos err.status === 403
-      if (err.status === 401 || err.status === 400 || err.status === 403) {
-        this.mensajeError = 'Usuario o contraseña incorrectos.';
-      } else {
-        this.mensajeError = 'Error al conectar con el servidor. Intenta más tarde.';
-      }
+    // 🟢 REDIRECCIÓN SEGÚN EL ROL
+    if (rol === 'ADMIN' || rol === 'ROLE_ADMIN') {
+      this.router.navigate(['/admin-dashboard']);
+    } else {
+      this.router.navigate(['/home']); // 👈 El CLIENTE se va a Home
     }
-  });
+  },
+  error: (err) => {
+    this.cargando = false;
+    this.mensajeError = 'Usuario o contraseña incorrectos.';
+  }
+});
 }
 }

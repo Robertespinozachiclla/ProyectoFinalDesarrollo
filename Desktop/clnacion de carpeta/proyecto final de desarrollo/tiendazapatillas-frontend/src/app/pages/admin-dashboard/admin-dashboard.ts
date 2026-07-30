@@ -1,8 +1,27 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProductoService, Producto } from '../../services/producto';
-import { CategoriaService, Categoria } from '../../services/categoria';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+
+export interface Categoria {
+  id?: number;
+  nombre: string;
+  descripcion?: string;
+}
+
+export interface Producto {
+  id?: number;
+  nombre: string;
+  descripcion?: string;
+  precio: number;
+  stock: number;
+  marca?: string;
+  color?: string;
+  talla?: string;
+  imagenUrl?: string; // 👟 Campo Talla
+  categoria?: Categoria | null;
+}
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -12,222 +31,170 @@ import { CategoriaService, Categoria } from '../../services/categoria';
   styleUrls: ['./admin-dashboard.css']
 })
 export class AdminDashboardComponent implements OnInit {
-  private productoService = inject(ProductoService);
-  private categoriaService = inject(CategoriaService);
+  private http = inject(HttpClient);
+  private router = inject(Router);
 
-  // Control de sección
-  seccionActual: string = 'productos';
+  private readonly API_PRODUCTOS = 'http://localhost:8080/api/productos';
+  private readonly API_CATEGORIAS = 'http://localhost:8080/api/categorias';
 
-  // Datos globales
+  seccionActiva: string = 'dashboard';
+  filtroGeneral: string = '';
+
   productos: Producto[] = [];
   categorias: Categoria[] = [];
 
-  // Filtros de búsqueda
-  busquedaProducto: string = '';
-  busquedaCategoria: string = '';
+  nuevoProducto: Producto = this.obtenerProductoVacio();
+  editandoProducto: boolean = false;
+  productoIdEditar: number | null = null;
 
-  // Estados UI
-  loading = true;
-  guardando = false;
-  modoEdicion = false;
-  idProductoEditar: number | null = null;
-
-  mensajeExito = '';
-  mensajeError = '';
-
-  // Formulario Producto
-  nuevoProducto: Producto = {
-    nombre: '',
-    descripcion: '',
-    precio: 0,
-    stock: 0,
-    marca: '',
-    color: '',
-    imagenUrl: '',
-    categoria: undefined
-  };
-  categoriaSeleccionadaId: number | null = null;
-
-  // Formulario Categoría
-  nuevaCategoria: Categoria = {
-    nombre: '',
-    descripcion: ''
-  };
+  nuevaCategoria: Categoria = { nombre: '', descripcion: '' };
+  editandoCategoria: boolean = false;
+  categoriaIdEditar: number | null = null;
 
   ngOnInit(): void {
-    this.cargarDatos();
+    this.cargarProductos();
+    this.cargarCategorias();
   }
 
-  cambiarSeccion(seccion: string): void {
-    this.seccionActual = seccion;
-    this.limpiarAlertas();
+  irASeccion(seccion: string): void {
+    this.seccionActiva = seccion;
   }
 
-  limpiarAlertas(): void {
-    this.mensajeExito = '';
-    this.mensajeError = '';
-  }
-
-  cargarDatos(): void {
-    this.loading = true;
-
-    this.productoService.getProductos().subscribe({
-      next: (prods: Producto[]) => {
-        this.productos = prods;
-        this.loading = false;
-      },
-      error: (err: any) => {
-        console.error('Error al cargar productos:', err);
-        this.mensajeError = 'Error de conexión con el servidor.';
-        this.loading = false;
-      }
-    });
-
-    this.categoriaService.getCategorias().subscribe({
-      next: (cats: Categoria[]) => {
-        this.categorias = cats;
-      },
-      error: (err: any) => console.error('Error al cargar categorías:', err)
+  // ==========================================
+  // LÓGICA DE PRODUCTOS
+  // ==========================================
+  cargarProductos(): void {
+    this.http.get<Producto[]>(this.API_PRODUCTOS).subscribe({
+      next: (data) => (this.productos = data),
+      error: (err) => console.error('Error al cargar productos:', err)
     });
   }
 
-  // --- GETTERS PARA METRICAS Y FILTROS ---
-  get productosFiltrados(): Producto[] {
-    if (!this.busquedaProducto.trim()) return this.productos;
-    const q = this.busquedaProducto.toLowerCase();
-    return this.productos.filter(p => 
-      p.nombre.toLowerCase().includes(q) || 
-      (p.marca && p.marca.toLowerCase().includes(q))
-    );
-  }
-
-  get productosStockBajoCount(): number {
-    return this.productos.filter(p => p.stock <= 5).length;
-  }
-
-  get valorTotalInventario(): number {
-    return this.productos.reduce((acc, p) => acc + (p.precio * p.stock), 0);
-  }
-
-  // --- OPERACIONES DE PRODUCTOS ---
   guardarProducto(): void {
-    this.limpiarAlertas();
-
-    if (!this.nuevoProducto.nombre || !this.nuevoProducto.precio || !this.categoriaSeleccionadaId) {
-      this.mensajeError = 'Por favor completa los campos obligatorios (*).';
+    if (!this.nuevoProducto.nombre || this.nuevoProducto.precio <= 0) {
+      alert('Por favor ingrese un nombre y precio válido.');
       return;
     }
 
-    this.guardando = true;
-    this.nuevoProducto.categoria = { id: Number(this.categoriaSeleccionadaId), nombre: '' };
-
-    if (this.modoEdicion && this.idProductoEditar) {
-      // 🟢 CORRECCIÓN: Editar Producto existente usando PUT (actualizarProducto)
-      this.nuevoProducto.id = this.idProductoEditar;
-      this.productoService.actualizarProducto(this.idProductoEditar, this.nuevoProducto).subscribe({
+    if (this.editandoProducto && this.productoIdEditar) {
+      this.http.put<Producto>(`${this.API_PRODUCTOS}/${this.productoIdEditar}`, this.nuevoProducto).subscribe({
         next: () => {
-          this.mensajeExito = '¡Producto actualizado correctamente!';
-          this.finalizarGuardado();
+          this.limpiarFormularioProducto();
+          this.cargarProductos();
         },
-        error: (err: any) => {
-          console.error(err);
-          this.mensajeError = 'Error al actualizar el producto.';
-          this.guardando = false;
-        }
+        error: (err) => console.error('Error al actualizar producto:', err)
       });
     } else {
-      // Crear nuevo Producto usando POST (guardarProducto)
-      this.productoService.guardarProducto(this.nuevoProducto).subscribe({
+      this.http.post<Producto>(this.API_PRODUCTOS, this.nuevoProducto).subscribe({
         next: () => {
-          this.mensajeExito = '¡Producto registrado con éxito!';
-          this.finalizarGuardado();
+          this.limpiarFormularioProducto();
+          this.cargarProductos();
         },
-        error: (err: any) => {
-          console.error(err);
-          this.mensajeError = 'Error al registrar el producto.';
-          this.guardando = false;
-        }
+        error: (err) => console.error('Error al guardar producto:', err)
       });
     }
   }
 
-  prepararEdicion(producto: Producto): void {
-    this.limpiarAlertas();
-    this.modoEdicion = true;
-    this.idProductoEditar = producto.id || null;
-
-    this.nuevoProducto = { ...producto };
-    this.categoriaSeleccionadaId = producto.categoria ? producto.categoria.id : null;
+  seleccionarProductoParaEditar(prod: Producto): void {
+    this.editandoProducto = true;
+    this.productoIdEditar = prod.id!;
+    this.nuevoProducto = {
+      nombre: prod.nombre,
+      descripcion: prod.descripcion || '',
+      precio: prod.precio,
+      stock: prod.stock,
+      marca: prod.marca || '',
+      color: prod.color || '',
+      talla: prod.talla || '',
+      categoria: prod.categoria ? { id: prod.categoria.id, nombre: prod.categoria.nombre } : null
+    };
   }
 
-  cancelarEdicion(): void {
-    this.modoEdicion = false;
-    this.idProductoEditar = null;
-    this.limpiarFormularioProducto();
-  }
-
-  eliminarProducto(id?: number): void {
-    if (!id) return;
-    this.limpiarAlertas();
-
-    if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-      this.productoService.eliminarProducto(id).subscribe({
-        next: () => {
-          this.mensajeExito = 'Producto eliminado correctamente.';
-          this.cargarDatos();
-        },
-        error: (err: any) => {
-          console.error(err);
-          this.mensajeError = 'No se pudo eliminar el producto.';
-        }
+  eliminarProducto(id: number): void {
+    if (confirm('¿Eliminar producto de forma permanente?')) {
+      this.http.delete(`${this.API_PRODUCTOS}/${id}`).subscribe({
+        next: () => this.cargarProductos(),
+        error: (err) => console.error('Error al eliminar producto:', err)
       });
     }
-  }
-
-  private finalizarGuardado(): void {
-    this.guardando = false;
-    this.modoEdicion = false;
-    this.idProductoEditar = null;
-    this.limpiarFormularioProducto();
-    this.cargarDatos();
   }
 
   limpiarFormularioProducto(): void {
-    this.nuevoProducto = {
-      nombre: '',
-      descripcion: '',
-      precio: 0,
-      stock: 0,
-      marca: '',
-      color: '',
-      imagenUrl: '',
-      categoria: undefined
-    };
-    this.categoriaSeleccionadaId = null;
+    this.nuevoProducto = this.obtenerProductoVacio();
+    this.editandoProducto = false;
+    this.productoIdEditar = null;
   }
 
-  // --- OPERACIONES DE CATEGORÍAS ---
-  crearCategoria(): void {
-    this.limpiarAlertas();
+  private obtenerProductoVacio(): Producto {
+    return { nombre: '', descripcion: '', precio: 0, stock: 0, marca: '', color: '', talla: '', categoria: null };
+  }
 
+  // ==========================================
+  // LÓGICA DE CATEGORÍAS
+  // ==========================================
+  cargarCategorias(): void {
+    this.http.get<Categoria[]>(this.API_CATEGORIAS).subscribe({
+      next: (data) => (this.categorias = data),
+      error: (err) => console.error('Error al cargar categorías:', err)
+    });
+  }
+
+  guardarCategoria(): void {
     if (!this.nuevaCategoria.nombre.trim()) {
-      this.mensajeError = 'El nombre de la categoría es obligatorio.';
+      alert('Ingrese un nombre para la categoría.');
       return;
     }
 
-    this.guardando = true;
-    this.categoriaService.guardarCategoria(this.nuevaCategoria).subscribe({
-      next: () => {
-        this.mensajeExito = `¡Categoría "${this.nuevaCategoria.nombre}" creada con éxito!`;
-        this.nuevaCategoria = { nombre: '', descripcion: '' };
-        this.guardando = false;
-        this.cargarDatos();
-      },
-      error: (err: any) => {
-        console.error(err);
-        this.mensajeError = 'No se pudo guardar la categoría.';
-        this.guardando = false;
-      }
-    });
+    if (this.editandoCategoria && this.categoriaIdEditar) {
+      this.http.put<Categoria>(`${this.API_CATEGORIAS}/${this.categoriaIdEditar}`, this.nuevaCategoria).subscribe({
+        next: () => {
+          this.limpiarFormularioCategoria();
+          this.cargarCategorias();
+        },
+        error: (err) => console.error('Error al actualizar categoría:', err)
+      });
+    } else {
+      this.http.post<Categoria>(this.API_CATEGORIAS, this.nuevaCategoria).subscribe({
+        next: () => {
+          this.limpiarFormularioCategoria();
+          this.cargarCategorias();
+        },
+        error: (err) => console.error('Error al guardar categoría:', err)
+      });
+    }
+  }
+
+  seleccionarCategoriaParaEditar(cat: Categoria): void {
+    this.editandoCategoria = true;
+    this.categoriaIdEditar = cat.id!;
+    this.nuevaCategoria = { nombre: cat.nombre, descripcion: cat.descripcion || '' };
+  }
+
+  eliminarCategoria(id: number): void {
+    if (confirm('¿Desea eliminar esta categoría?')) {
+      this.http.delete(`${this.API_CATEGORIAS}/${id}`).subscribe({
+        next: () => this.cargarCategorias(),
+        error: (err) => console.error('Error al eliminar categoría:', err)
+      });
+    }
+  }
+
+  limpiarFormularioCategoria(): void {
+    this.nuevaCategoria = { nombre: '', descripcion: '' };
+    this.editandoCategoria = false;
+    this.categoriaIdEditar = null;
+  }
+
+  // ==========================================
+  // AUXILIARES
+  // ==========================================
+  cerrarSesion(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    this.router.navigate(['/login']);
+  }
+
+  compararCategorias(c1: Categoria, c2: Categoria): boolean {
+    return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
 }

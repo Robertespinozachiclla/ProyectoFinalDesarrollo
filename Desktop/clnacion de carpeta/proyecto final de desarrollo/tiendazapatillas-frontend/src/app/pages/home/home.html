@@ -28,7 +28,7 @@
     <button class="icon-btn cart-btn" title="Carrito">
       <i class="bi bi-bag"></i>
     </button>
-</div>
+  </div>
 </header>
 
 <!-- MAIN CONTENT -->
@@ -38,59 +38,44 @@
     <h2>Productos Destacados</h2>
   </section>
 
-  <!-- GRID DE PRODUCTOS -->
-  <div class="products-grid">
+  <!-- Estado de Carga -->
+  <div *ngIf="loading" class="text-center my-5">
+    <p>Cargando productos del catálogo...</p>
+  </div>
+
+  <!-- Lista Vacía -->
+  <div *ngIf="!loading && destacados.length === 0" class="alert alert-info text-center my-4">
+    No hay productos disponibles actualmente.
+  </div>
+
+  <!-- GRID DINÁMICO DE PRODUCTOS DESDE BASE DE DATOS -->
+  <div class="products-grid" *ngIf="!loading && destacados.length > 0">
     
-    <!-- Card 1 -->
-    <div class="product-card">
+    <div class="product-card" *ngFor="let prod of destacados">
       <div class="image-container">
-        <!-- Puedes colocar aquí una imagen real <img> si la tienes -->
-        <span class="placeholder-text">NIKE AIR MAX</span>
+        <!-- Renderiza la imagen guardada en la carpeta public/ o un texto alternativo -->
+        <img 
+          *ngIf="prod.imagenUrl" 
+          [src]="prod.imagenUrl" 
+          [alt]="prod.nombre" 
+          style="width: 100%; height: 100%; object-fit: cover;">
+        
+        <span *ngIf="!prod.imagenUrl" class="placeholder-text">
+          {{ prod.nombre | uppercase }}
+        </span>
       </div>
+      
       <div class="card-body">
-        <span class="tag">Nike • Urbano</span>
-        <h3>Air Max 90</h3>
-        <p class="description">Edición especial con amortiguación clásica.</p>
+        <span class="tag">
+          {{ prod.categoria?.nombre || 'Urbano' }}
+        </span>
+        <h3>{{ prod.nombre }}</h3>
+        <p class="description">{{ prod.descripcion }}</p>
+        
         <div class="card-footer">
-          <span class="price">S/ 450.00</span>
+          <span class="price">S/ {{ prod.precio }}</span>
           <button class="add-btn">
-            Agregar <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="product-card featured-card">
-      <div class="image-container">
-        <span class="placeholder-text">ADIDAS SAMBA</span>
-      </div>
-      <div class="card-body">
-        <span class="tag">Adidas • Clásico</span>
-        <h3>Samba OG</h3>
-        <p class="description">Diseño icónico en cuero con detalles en gamaza.</p>
-        <div class="card-footer">
-          <span class="price">S/ 380.00</span>
-          <button class="add-btn">
-            Agregar <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="product-card">
-      <div class="image-container">
-        <span class="placeholder-text">PUMA PALERMO</span>
-      </div>
-      <div class="card-body">
-        <span class="tag">Puma • Retro</span>
-        <h3>Especial de Palermo</h3>
-        <p class="description">Estilo retro futbolero para el día a día.</p>
-        <div class="card-footer">
-          <span class="price">S/ 320.00</span>
-          <button class="add-btn">
-            Agregar <i class="fas fa-shopping-cart"></i>
+            Agregar <i class="bi bi-bag"></i>
           </button>
         </div>
       </div>

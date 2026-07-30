@@ -1,379 +1,351 @@
-<div class="dashboard-layout">
-  <!-- SIDEBAR CLARO Y ELEGANTE -->
+<div class="admin-layout">
+
+  <!-- 📁 SIDEBAR (MENÚ LATERAL) -->
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <h2>GRUPO <span>ESPINOZA</span></h2>
-      <p class="slogan">Siempre acompañando tus pasos</p>
+      <div class="brand-icon"><i class="bi bi-shop"></i></div>
+      <div>
+        <h5 class="m-0 font-weight-bold">ESPINOZA</h5>
+        <small class="text-muted">E-commerce Admin</small>
+      </div>
     </div>
-    
-    <nav class="sidebar-nav">
-      <span class="nav-section-title">PRINCIPAL</span>
-      <a [class.active]="seccionActual === 'productos'" (click)="cambiarSeccion('productos')">📦 Productos</a>
-      <a [class.active]="seccionActual === 'categorias'" (click)="cambiarSeccion('categorias')">🏷️ Categorías</a>
-      <a [class.active]="seccionActual === 'pedidos'" (click)="cambiarSeccion('pedidos')">🛍️ Pedidos</a>
-      <a [class.active]="seccionActual === 'clientes'" (click)="cambiarSeccion('clientes')">👥 Clientes</a>
 
-      <span class="nav-section-title">GESTIÓN AVANZADA</span>
-      <a [class.active]="seccionActual === 'reportes'" (click)="cambiarSeccion('reportes')">📊 Reportes y Ventas</a>
-      <a [class.active]="seccionActual === 'cupones'" (click)="cambiarSeccion('cupones')">🎟️ Cupones y Promos</a>
-      <a [class.active]="seccionActual === 'envios'" (click)="cambiarSeccion('envios')">🚚 Envíos y Logística</a>
-      <a [class.active]="seccionActual === 'configuracion'" (click)="cambiarSeccion('configuracion')">⚙️ Configuración</a>
+    <div class="sidebar-section">MENÚ PRINCIPAL</div>
+    <ul class="nav flex-column menu-links">
+      <li class="nav-item">
+        <button class="nav-link-btn" [class.active]="seccionActiva === 'dashboard'" (click)="seccionActiva = 'dashboard'">
+          <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link-btn" [class.active]="seccionActiva === 'productos'" (click)="seccionActiva = 'productos'">
+          <i class="bi bi-box-seam-fill me-2"></i> Productos
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link-btn" [class.active]="seccionActiva === 'categorias'" (click)="seccionActiva = 'categorias'">
+          <i class="bi bi-tags-fill me-2"></i> Categorías
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link-btn" [class.active]="seccionActiva === 'pedidos'" (click)="seccionActiva = 'pedidos'">
+          <i class="bi bi-cart-check-fill me-2"></i> Pedidos
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link-btn" [class.active]="seccionActiva === 'clientes'" (click)="seccionActiva = 'clientes'">
+          <i class="bi bi-people-fill me-2"></i> Clientes
+        </button>
+      </li>
+    </ul>
 
-      <a href="/" class="exit-link">⬅️ Ir a la Tienda</a>
-    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card mb-3">
+        <div class="avatar">A</div>
+        <div class="user-info">
+          <span class="user-name">Administrador</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+      </div>
+      <button class="btn btn-logout w-100" (click)="cerrarSesion()">
+        <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+      </button>
+    </div>
   </aside>
 
-  <!-- PANEL PRINCIPAL -->
-  <main class="main-panel">
-    <header class="panel-header">
-      <div>
-        <h1>
-          {{ seccionActual === 'productos' ? 'Gestión de Productos' : '' }}
-          {{ seccionActual === 'categorias' ? 'Gestión de Categorías' : '' }}
-          {{ seccionActual === 'pedidos' ? 'Gestión de Pedidos' : '' }}
-          {{ seccionActual === 'clientes' ? 'Directorio de Clientes' : '' }}
-          {{ seccionActual === 'reportes' ? 'Reportes y Métricas' : '' }}
-          {{ seccionActual === 'cupones' ? 'Cupones de Descuento' : '' }}
-          {{ seccionActual === 'envios' ? 'Logística y Envíos' : '' }}
-          {{ seccionActual === 'configuracion' ? 'Configuración de Tienda' : '' }}
-        </h1>
-        <p class="subtitle">Panel de Control General • Grupo Espinoza S.A.</p>
+  <!-- 💻 CONTENIDO PRINCIPAL -->
+  <main class="main-wrapper">
+
+    <!-- 🔝 TOPBAR SUPERIOR -->
+    <header class="admin-topbar">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar en el panel..." [(ngModel)]="filtroGeneral">
       </div>
-      <div class="user-profile">
-        <span class="user-avatar">GE</span>
-        <div class="user-info">
-          <strong>Administrador</strong>
-          <small>admin@grupoespinoza.pe</small>
-        </div>
+
+      <div class="topbar-actions">
+        <button class="btn btn-action-icon" title="Notificaciones">
+          <i class="bi bi-bell"></i>
+          <span class="badge-dot"></span>
+        </button>
+        <button class="btn btn-action-icon" title="Ajustes">
+          <i class="bi bi-gear"></i>
+        </button>
+        <div class="vr mx-2"></div>
+        <button class="btn btn-primary btn-sm rounded-pill px-3" (click)="irASeccion('productos')">
+          <i class="bi bi-plus-lg me-1"></i> Nuevo Producto
+        </button>
       </div>
     </header>
 
-    <!-- TARJETAS DE MÉTRICAS (VISIBLES EN VISTA PRODUCTOS Y REPORTES) -->
-    <section class="metrics-grid" *ngIf="seccionActual === 'productos' || seccionActual === 'reportes'">
-      <div class="metric-card">
-        <div class="metric-icon gold">👟</div>
-        <div class="metric-info">
-          <span>Total Productos</span>
-          <h3>{{ productos.length }}</h3>
-        </div>
-      </div>
-      <div class="metric-card warning">
-        <div class="metric-icon">⚠️</div>
-        <div class="metric-info">
-          <span>Stock Crítico (≤ 5)</span>
-          <h3>{{ productosStockBajoCount }}</h3>
-        </div>
-      </div>
-      <div class="metric-card success">
-        <div class="metric-icon">💵</div>
-        <div class="metric-info">
-          <span>Valor Inventario</span>
-          <h3>S/ {{ valorTotalInventario | number:'1.2-2' }}</h3>
-        </div>
-      </div>
-      <div class="metric-card info">
-        <div class="metric-icon">🏷️</div>
-        <div class="metric-info">
-          <span>Categorías</span>
-          <h3>{{ categorias.length }}</h3>
-        </div>
-      </div>
-    </section>
+    <div class="content-body">
 
-    <!-- ALERTAS -->
-    <div *ngIf="mensajeExito" class="alert alert-success">✅ {{ mensajeExito }}</div>
-    <div *ngIf="mensajeError" class="alert alert-danger">⚠️ {{ mensajeError }}</div>
-
-    <!-- 1. VISTA DE PRODUCTOS -->
-    <div class="dashboard-grid" *ngIf="seccionActual === 'productos'">
-      
-      <!-- FORMULARIO -->
-      <section class="card form-card">
-        <h3>{{ modoEdicion ? '✏️ Editar Producto' : '➕ Nuevo Producto' }}</h3>
-        
-        <form (ngSubmit)="guardarProducto()">
-          <div class="form-group">
-            <label>Nombre del Producto *</label>
-            <input type="text" [(ngModel)]="nuevoProducto.nombre" name="nombre" placeholder="Ej. Nike Air Max" required>
+      <!-- ========================================== -->
+      <!-- SECCIÓN 1: DASHBOARD / RESUMEN             -->
+      <!-- ========================================== -->
+      <div *ngIf="seccionActiva === 'dashboard'">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h3 class="fw-bold mb-1">Resumen del Sistema</h3>
+            <p class="text-muted small m-0">Bienvenido de nuevo, aquí tienes las métricas clave de hoy.</p>
           </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Marca</label>
-              <input type="text" [(ngModel)]="nuevoProducto.marca" name="marca" placeholder="Ej. Nike">
-            </div>
-            <div class="form-group">
-              <label>Color</label>
-              <input type="text" [(ngModel)]="nuevoProducto.color" name="color" placeholder="Ej. Blanco">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Precio (S/) *</label>
-              <input type="number" [(ngModel)]="nuevoProducto.precio" name="precio" placeholder="0.00" min="0" required>
-            </div>
-            <div class="form-group">
-              <label>Stock *</label>
-              <input type="number" [(ngModel)]="nuevoProducto.stock" name="stock" placeholder="0" min="0" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Categoría *</label>
-            <select [(ngModel)]="categoriaSeleccionadaId" name="categoria" required>
-              <option [ngValue]="null" disabled selected>-- Selecciona Categoría --</option>
-              <option *ngFor="let cat of categorias" [value]="cat.id">{{ cat.nombre }}</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>URL Imagen</label>
-            <input type="url" [(ngModel)]="nuevoProducto.imagenUrl" name="imagenUrl" placeholder="https://ejemplo.com/foto.jpg">
-          </div>
-
-          <div class="img-preview" *ngIf="nuevoProducto.imagenUrl">
-            <img [src]="nuevoProducto.imagenUrl" alt="Previsualización" (error)="nuevoProducto.imagenUrl = ''">
-          </div>
-
-          <div class="form-group">
-            <label>Descripción</label>
-            <textarea [(ngModel)]="nuevoProducto.descripcion" name="descripcion" rows="2" placeholder="Detalles de la zapatilla..."></textarea>
-          </div>
-
-          <button type="submit" class="btn-submit" [disabled]="guardando">
-            {{ guardando ? 'Guardando...' : (modoEdicion ? 'Actualizar Producto' : 'Guardar Producto') }}
-          </button>
-
-          <button type="button" class="btn-cancel" *ngIf="modoEdicion" (click)="cancelarEdicion()">
-            Cancelar Edición
-          </button>
-        </form>
-      </section>
-
-      <!-- TABLA DE PRODUCTOS -->
-      <section class="card table-card">
-        <div class="table-header">
-          <h3>Catálogo ({{ productosFiltrados.length }})</h3>
-          
-          <div class="search-box">
-            <input type="text" [(ngModel)]="busquedaProducto" placeholder="🔍 Buscar por nombre o marca...">
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-download me-1"></i> Exportar Reporte</button>
           </div>
         </div>
 
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Foto</th>
-                <th>Producto</th>
-                <th>Marca</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let p of productosFiltrados">
-                <td>
-                  <div class="table-img-thumb">
-                    <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" [alt]="p.nombre">
-                    <span *ngIf="!p.imagenUrl">👟</span>
+        <!-- TARJETAS DE MÉTRICAS -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <div class="card card-kpi">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="kpi-title">TOTAL PRODUCTOS</span>
+                    <h3 class="kpi-value">{{ productos.length }}</h3>
+                    <span class="kpi-sub text-success"><i class="bi bi-arrow-up"></i> Actualizado</span>
                   </div>
-                </td>
-                <td>
-                  <div class="product-info">
-                    <strong>{{ p.nombre }}</strong>
-                    <span class="color-sub" *ngIf="p.color">Color: {{ p.color }}</span>
+                  <div class="kpi-icon bg-soft-primary"><i class="bi bi-box-seam"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="card card-kpi">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="kpi-title">CATEGORÍAS</span>
+                    <h3 class="kpi-value">{{ categorias.length }}</h3>
+                    <span class="kpi-sub text-muted">Activas</span>
                   </div>
-                </td>
-                <td>
-                  <span class="brand-pill">{{ p.marca || 'N/A' }}</span>
-                </td>
-                <td class="price-cell">S/ {{ p.precio | number:'1.2-2' }}</td>
-                <td>
-                  <span class="stock-badge" 
-                        [class.low-stock]="p.stock > 0 && p.stock <= 5"
-                        [class.out-stock]="p.stock === 0">
-                    {{ p.stock === 0 ? 'Agotado' : p.stock + ' un.' }}
-                  </span>
-                </td>
-                <td class="action-buttons">
-                  <button class="btn-edit" title="Editar" (click)="prepararEdicion(p)">✏️</button>
-                  <button class="btn-delete" title="Eliminar" (click)="eliminarProducto(p.id)">🗑️</button>
-                </td>
-              </tr>
-
-              <tr *ngIf="!loading && productosFiltrados.length === 0">
-                <td colspan="6" class="empty-msg">No se encontraron productos.</td>
-              </tr>
-              <tr *ngIf="loading">
-                <td colspan="6" class="loading-state">⌛ Cargando catálogo...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-    </div>
-
-    <!-- 2. VISTA DE CATEGORÍAS -->
-    <div class="dashboard-grid" *ngIf="seccionActual === 'categorias'">
-      <section class="card form-card">
-        <h3>Nueva Categoría</h3>
-        <form (ngSubmit)="crearCategoria()">
-          <div class="form-group">
-            <label>Nombre de Categoría *</label>
-            <input type="text" [(ngModel)]="nuevaCategoria.nombre" name="catNombre" placeholder="Ej. Deportivas" required>
+                  <div class="kpi-icon bg-soft-success"><i class="bi bi-tags"></i></div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Descripción</label>
-            <textarea [(ngModel)]="nuevaCategoria.descripcion" name="catDesc" rows="3"></textarea>
+
+          <div class="col-md-3">
+            <div class="card card-kpi">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="kpi-title">PEDIDOS HOY</span>
+                    <h3 class="kpi-value">12</h3>
+                    <span class="kpi-sub text-success"><i class="bi bi-arrow-up"></i> +15% vs ayer</span>
+                  </div>
+                  <div class="kpi-icon bg-soft-warning"><i class="bi bi-cart3"></i></div>
+                </div>
+              </div>
+            </div>
           </div>
-          <button type="submit" class="btn-submit" [disabled]="guardando">Guardar Categoría</button>
-        </form>
-      </section>
 
-      <section class="card table-card">
-        <div class="table-header">
-          <h3>Categorías Registradas ({{ categorias.length }})</h3>
+          <div class="col-md-3">
+            <div class="card card-kpi">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="kpi-title">INGRESOS (EST.)</span>
+                    <h3 class="kpi-value">S/ 4,250.00</h3>
+                    <span class="kpi-sub text-success"><i class="bi bi-graph-up"></i> Meta mensual</span>
+                  </div>
+                  <div class="kpi-icon bg-soft-info"><i class="bi bi-currency-dollar"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr><th>ID</th><th>Nombre</th><th>Descripción</th></tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let c of categorias">
-                <td class="id-cell">#{{ c.id }}</td>
-                <td><strong>{{ c.nombre }}</strong></td>
-                <td>{{ c.descripcion || 'Sin descripción' }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </div>
-
-    <!-- 3. VISTA DE PEDIDOS -->
-    <div *ngIf="seccionActual === 'pedidos'" class="card">
-      <h3>Pedidos Recibidos</h3>
-      <p class="section-desc">Monitoreo de compras y estado de despachos.</p>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr><th># Pedido</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th></tr>
-          </thead>
-          <tbody>
-            <tr><td colspan="5" class="empty-msg">No hay pedidos registrados en el sistema.</td></tr>
-          </tbody>
-        </table>
       </div>
-    </div>
 
-    <!-- 4. VISTA DE CLIENTES -->
-    <div *ngIf="seccionActual === 'clientes'" class="card">
-      <h3>Directorio de Clientes</h3>
-      <p class="section-desc">Lista de usuarios registrados e historial de interacción.</p>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th></tr>
-          </thead>
-          <tbody>
-            <tr><td colspan="4" class="empty-msg">No hay clientes registrados en el sistema.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 5. NUEVA SECCIÓN: REPORTES -->
-    <div *ngIf="seccionActual === 'reportes'" class="card">
-      <h3>Resumen Ejecutivo de Ventas</h3>
-      <p class="section-desc">Métricas claves sobre las ventas de la tienda.</p>
-      <div class="placeholder-box">
-        <div class="chart-dummy">
-          <div class="bar" style="height: 40%"><span>Ene</span></div>
-          <div class="bar" style="height: 65%"><span>Feb</span></div>
-          <div class="bar" style="height: 85%"><span>Mar</span></div>
-          <div class="bar" style="height: 50%"><span>Abr</span></div>
-          <div class="bar active" style="height: 95%"><span>May</span></div>
-        </div>
-        <p class="chart-legend">📈 Incremento de ventas del **+24%** este último mes.</p>
-      </div>
-    </div>
-
-    <!-- 6. NUEVA SECCIÓN: CUPONES -->
-    <div *ngIf="seccionActual === 'cupones'" class="card">
-      <h3>Cupones y Promociones</h3>
-      <p class="section-desc">Crea códigos de descuento para promociones en la web.</p>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr><th>Código</th><th>Descuento</th><th>Límite de Uso</th><th>Estado</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="code-pill">ESPINOZA2026</span></td>
-              <td>15% OFF</td>
-              <td>100 us.</td>
-              <td><span class="badge-active">Activo</span></td>
-            </tr>
-            <tr>
-              <td><span class="code-pill">BIENVENIDA</span></td>
-              <td>10% OFF</td>
-              <td>Sin límite</td>
-              <td><span class="badge-active">Activo</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 7. NUEVA SECCIÓN: ENVÍOS -->
-    <div *ngIf="seccionActual === 'envios'" class="card">
-      <h3>Logística y Envíos</h3>
-      <p class="section-desc">Configuración de agencias de envío y tarifas por región.</p>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr><th>Agencia</th><th>Cobertura</th><th>Tarifa Promedio</th><th>Estado</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Shalom Express</td><td>Nacional</td><td>S/ 15.00</td><td><span class="badge-active">Habilitado</span></td></tr>
-            <tr><td>Olva Courier</td><td>Nacional</td><td>S/ 18.00</td><td><span class="badge-active">Habilitado</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 8. NUEVA SECCIÓN: CONFIGURACIÓN -->
-    <div *ngIf="seccionActual === 'configuracion'" class="card">
-      <h3>Ajustes Generales de la Empresa</h3>
-      <form class="config-form" (ngSubmit)="$event.preventDefault()">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Razón Social</label>
-            <input type="text" value="Grupo Espinoza S.A." readonly>
-          </div>
-          <div class="form-group">
-            <label>RUC</label>
-            <input type="text" value="20600000001">
+      <!-- ========================================== -->
+      <!-- SECCIÓN 2: PRODUCTOS                       -->
+      <!-- ========================================== -->
+      <div *ngIf="seccionActiva === 'productos'">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="fw-bold m-0">Gestión de Productos</h4>
+          <div class="d-flex gap-2">
+            <button class="btn btn-light btn-sm border" (click)="limpiarFormularioProducto()"><i class="bi bi-arrow-clockwise me-1"></i> Limpiar</button>
+            <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-file-earmark-excel me-1"></i> Exportar</button>
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Teléfono de Contacto / WhatsApp</label>
-            <input type="text" value="+51 987 654 321">
+
+        <!-- Formulario Producto -->
+        <div class="card form-card mb-4 shadow-sm">
+          <div class="card-header bg-white border-bottom-0 pt-3">
+            <h6 class="fw-bold m-0 text-primary"><i class="bi bi-pencil-square me-1"></i> {{ editandoProducto ? 'Editar Producto' : 'Crear Nuevo Producto' }}</h6>
           </div>
-          <div class="form-group">
-            <label>IGV (%)</label>
-            <input type="number" value="18">
+          <div class="card-body pt-2">
+            <form (ngSubmit)="guardarProducto()">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label small font-weight-bold">Nombre del Producto:</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.nombre" name="nombre" required placeholder="Ej: Nike Air Max 90">
+                </div>
+
+                <div class="col-md-2">
+                  <label class="form-label small font-weight-bold">Precio (S/):</label>
+                  <input type="number" step="0.01" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.precio" name="precio" required>
+                </div>
+
+                <div class="col-md-2">
+                  <label class="form-label small font-weight-bold">Stock:</label>
+                  <input type="number" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.stock" name="stock" required>
+                </div>
+
+                <!-- 👟 NUEVO CAMPO TALLA/TALLAS -->
+                <div class="col-md-2">
+                  <label class="form-label small font-weight-bold">Talla / Tallas:</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.talla" name="talla" placeholder="Ej: 38, 39, 40, 41">
+                </div>
+
+                <div class="col-md-2">
+                  <label class="form-label small font-weight-bold">Categoría:</label>
+                  <select class="form-select form-select-sm" [(ngModel)]="nuevoProducto.categoria" name="categoria" [compareWith]="compararCategorias">
+                    <option [ngValue]="null">-- General --</option>
+                    <option *ngFor="let cat of categorias" [ngValue]="cat">{{ cat.nombre }}</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label small font-weight-bold">Ruta de Imagen (`/productos/zapatilla.jpg`):</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.imagenUrl" name="imagenUrl" placeholder="/productos/zapatilla.jpg">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label small font-weight-bold">Descripción:</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.descripcion" name="descripcion" placeholder="Breve descripción del producto...">
+                </div>
+
+                <div class="col-md-12 d-flex justify-content-end gap-2 mt-3">
+                  <button type="button" *ngIf="editandoProducto" class="btn btn-secondary btn-sm" (click)="limpiarFormularioProducto()">Cancelar</button>
+                  <button type="submit" class="btn btn-primary btn-sm px-4"><i class="bi bi-save me-1"></i> {{ editandoProducto ? 'Actualizar' : 'Guardar Producto' }}</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
-        <button type="submit" class="btn-submit">Guardar Ajustes</button>
-      </form>
-    </div>
 
+        <!-- Tabla Productos -->
+        <div class="card card-table shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle m-0">
+              <thead>
+                <tr>
+                  <th>PRODUCTO</th>
+                  <th>CATEGORÍA</th>
+                  <th>TALLA(S)</th>
+                  <th>PRECIO</th>
+                  <th>STOCK</th>
+                  <th>ESTADO</th>
+                  <th class="text-end">ACCIONES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let prod of productos">
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <img [src]="prod.imagenUrl || '/assets/no-image.png'" [alt]="prod.nombre" class="table-img">
+                      <div>
+                        <div class="fw-bold text-dark">{{ prod.nombre }}</div>
+                        <small class="text-muted text-truncate d-inline-block" style="max-width: 180px;">{{ prod.descripcion }}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge bg-soft-primary text-primary">{{ prod.categoria?.nombre || 'General' }}</span></td>
+                  <td><span class="badge bg-light text-dark border">{{ prod.talla || 'N/A' }}</span></td>
+                  <td class="fw-bold">S/ {{ prod.precio }}</td>
+                  <td>{{ prod.stock }} u.</td>
+                  <td>
+                    <span class="badge" [ngClass]="prod.stock > 5 ? 'bg-soft-success text-success' : (prod.stock > 0 ? 'bg-soft-warning text-warning' : 'bg-soft-danger text-danger')">
+                      {{ prod.stock > 5 ? 'En Stock' : (prod.stock > 0 ? 'Pocas Unidades' : 'Agotado') }}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <button class="btn btn-action-sm btn-light text-primary me-1" (click)="seleccionarProductoParaEditar(prod)" title="Editar"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-action-sm btn-light text-danger" (click)="eliminarProducto(prod.id!)" title="Eliminar"><i class="bi bi-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- SECCIÓN 3: CATEGORÍAS                     -->
+      <!-- ========================================== -->
+      <div *ngIf="seccionActiva === 'categorias'">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="fw-bold m-0">Gestión de Categorías</h4>
+        </div>
+
+        <!-- Formulario Categoría -->
+        <div class="card form-card mb-4 shadow-sm">
+          <div class="card-body">
+            <form (ngSubmit)="guardarCategoria()">
+              <div class="row g-2">
+                <div class="col-md-5">
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevaCategoria.nombre" name="nombreCat" placeholder="Nombre de categoría" required>
+                </div>
+                <div class="col-md-5">
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevaCategoria.descripcion" name="descCat" placeholder="Descripción (Opcional)">
+                </div>
+                <div class="col-md-2 d-flex gap-1">
+                  <button type="submit" class="btn btn-primary btn-sm w-100">{{ editandoCategoria ? 'Actualizar' : 'Guardar' }}</button>
+                  <button type="button" *ngIf="editandoCategoria" (click)="limpiarFormularioCategoria()" class="btn btn-secondary btn-sm">Cancelar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Tabla Categorías -->
+        <div class="card card-table shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle m-0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>NOMBRE</th>
+                  <th>DESCRIPCIÓN</th>
+                  <th class="text-end">ACCIONES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cat of categorias">
+                  <td>#{{ cat.id }}</td>
+                  <td class="fw-bold">{{ cat.nombre }}</td>
+                  <td class="text-muted">{{ cat.descripcion || 'Sin descripción' }}</td>
+                  <td class="text-end">
+                    <button class="btn btn-action-sm btn-light text-primary me-1" (click)="seleccionarCategoriaParaEditar(cat)"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-action-sm btn-light text-danger" (click)="eliminarCategoria(cat.id!)"><i class="bi bi-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN PEDIDOS -->
+      <div *ngIf="seccionActiva === 'pedidos'">
+        <h4 class="fw-bold mb-3">Gestión de Pedidos</h4>
+        <div class="card p-5 text-center text-muted">
+          <i class="bi bi-cart-x display-4 mb-2"></i>
+          <p>No hay pedidos pendientes por procesar.</p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN CLIENTES -->
+      <div *ngIf="seccionActiva === 'clientes'">
+        <h4 class="fw-bold mb-3">Clientes Registrados</h4>
+        <div class="card p-5 text-center text-muted">
+          <i class="bi bi-person-x display-4 mb-2"></i>
+          <p>Base de datos de clientes actualizada.</p>
+        </div>
+      </div>
+
+    </div>
   </main>
 </div>
