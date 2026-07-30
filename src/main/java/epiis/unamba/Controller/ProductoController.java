@@ -11,6 +11,7 @@ import epiis.unamba.service.ProductoService;
 
 @RestController
 @RequestMapping("/api/productos")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ProductoController {
 
     private final ProductoService prodService;
@@ -47,14 +48,12 @@ public class ProductoController {
         try {
             boolean eliminado = prodService.eliminar(id);
             if (eliminado) {
-                return ResponseEntity.ok("Producto eliminado correctamente");
+                return ResponseEntity.noContent().build();
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                     .body("Producto no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                 .body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }
