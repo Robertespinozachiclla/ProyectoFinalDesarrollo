@@ -1,30 +1,84 @@
 <div class="dashboard-layout">
-  <!-- SIDEBAR CON SECCIONES CONMUTABLES -->
+  <!-- SIDEBAR CLARO Y ELEGANTE -->
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <h2>THN <span>ADMIN</span></h2>
+      <h2>GRUPO <span>ESPINOZA</span></h2>
+      <p class="slogan">Siempre acompañando tus pasos</p>
     </div>
+    
     <nav class="sidebar-nav">
+      <span class="nav-section-title">PRINCIPAL</span>
       <a [class.active]="seccionActual === 'productos'" (click)="cambiarSeccion('productos')">📦 Productos</a>
       <a [class.active]="seccionActual === 'categorias'" (click)="cambiarSeccion('categorias')">🏷️ Categorías</a>
       <a [class.active]="seccionActual === 'pedidos'" (click)="cambiarSeccion('pedidos')">🛍️ Pedidos</a>
       <a [class.active]="seccionActual === 'clientes'" (click)="cambiarSeccion('clientes')">👥 Clientes</a>
+
+      <span class="nav-section-title">GESTIÓN AVANZADA</span>
+      <a [class.active]="seccionActual === 'reportes'" (click)="cambiarSeccion('reportes')">📊 Reportes y Ventas</a>
+      <a [class.active]="seccionActual === 'cupones'" (click)="cambiarSeccion('cupones')">🎟️ Cupones y Promos</a>
+      <a [class.active]="seccionActual === 'envios'" (click)="cambiarSeccion('envios')">🚚 Envíos y Logística</a>
+      <a [class.active]="seccionActual === 'configuracion'" (click)="cambiarSeccion('configuracion')">⚙️ Configuración</a>
+
       <a href="/" class="exit-link">⬅️ Ir a la Tienda</a>
     </nav>
   </aside>
 
-  <!-- CONTENIDO PRINCIPAL -->
+  <!-- PANEL PRINCIPAL -->
   <main class="main-panel">
     <header class="panel-header">
       <div>
-        <h1 *ngIf="seccionActual === 'productos'">Gestión de Productos</h1>
-        <h1 *ngIf="seccionActual === 'categorias'">Gestión de Categorías</h1>
-        <h1 *ngIf="seccionActual === 'pedidos'">Listado de Pedidos Recibidos</h1>
-        <h1 *ngIf="seccionActual === 'clientes'">Directorio de Clientes</h1>
-        <p class="subtitle">Panel de administración global de tu tienda.</p>
+        <h1>
+          {{ seccionActual === 'productos' ? 'Gestión de Productos' : '' }}
+          {{ seccionActual === 'categorias' ? 'Gestión de Categorías' : '' }}
+          {{ seccionActual === 'pedidos' ? 'Gestión de Pedidos' : '' }}
+          {{ seccionActual === 'clientes' ? 'Directorio de Clientes' : '' }}
+          {{ seccionActual === 'reportes' ? 'Reportes y Métricas' : '' }}
+          {{ seccionActual === 'cupones' ? 'Cupones de Descuento' : '' }}
+          {{ seccionActual === 'envios' ? 'Logística y Envíos' : '' }}
+          {{ seccionActual === 'configuracion' ? 'Configuración de Tienda' : '' }}
+        </h1>
+        <p class="subtitle">Panel de Control General • Grupo Espinoza S.A.</p>
       </div>
-      <span class="user-badge">Administrador</span>
+      <div class="user-profile">
+        <span class="user-avatar">GE</span>
+        <div class="user-info">
+          <strong>Administrador</strong>
+          <small>admin@grupoespinoza.pe</small>
+        </div>
+      </div>
     </header>
+
+    <!-- TARJETAS DE MÉTRICAS (VISIBLES EN VISTA PRODUCTOS Y REPORTES) -->
+    <section class="metrics-grid" *ngIf="seccionActual === 'productos' || seccionActual === 'reportes'">
+      <div class="metric-card">
+        <div class="metric-icon gold">👟</div>
+        <div class="metric-info">
+          <span>Total Productos</span>
+          <h3>{{ productos.length }}</h3>
+        </div>
+      </div>
+      <div class="metric-card warning">
+        <div class="metric-icon">⚠️</div>
+        <div class="metric-info">
+          <span>Stock Crítico (≤ 5)</span>
+          <h3>{{ productosStockBajoCount }}</h3>
+        </div>
+      </div>
+      <div class="metric-card success">
+        <div class="metric-icon">💵</div>
+        <div class="metric-info">
+          <span>Valor Inventario</span>
+          <h3>S/ {{ valorTotalInventario | number:'1.2-2' }}</h3>
+        </div>
+      </div>
+      <div class="metric-card info">
+        <div class="metric-icon">🏷️</div>
+        <div class="metric-info">
+          <span>Categorías</span>
+          <h3>{{ categorias.length }}</h3>
+        </div>
+      </div>
+    </section>
 
     <!-- ALERTAS -->
     <div *ngIf="mensajeExito" class="alert alert-success">✅ {{ mensajeExito }}</div>
@@ -32,124 +86,293 @@
 
     <!-- 1. VISTA DE PRODUCTOS -->
     <div class="dashboard-grid" *ngIf="seccionActual === 'productos'">
-      <!-- Formulario Productos -->
+      
+      <!-- FORMULARIO -->
       <section class="card form-card">
-        <h3>Nuevo Producto</h3>
-        <form (ngSubmit)="crearProducto()">
+        <h3>{{ modoEdicion ? '✏️ Editar Producto' : '➕ Nuevo Producto' }}</h3>
+        
+        <form (ngSubmit)="guardarProducto()">
           <div class="form-group">
             <label>Nombre del Producto *</label>
-            <input type="text" [(ngModel)]="nuevoProducto.nombre" name="nombre" required>
+            <input type="text" [(ngModel)]="nuevoProducto.nombre" name="nombre" placeholder="Ej. Nike Air Max" required>
           </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Marca</label>
+              <input type="text" [(ngModel)]="nuevoProducto.marca" name="marca" placeholder="Ej. Nike">
+            </div>
+            <div class="form-group">
+              <label>Color</label>
+              <input type="text" [(ngModel)]="nuevoProducto.color" name="color" placeholder="Ej. Blanco">
+            </div>
+          </div>
+
           <div class="form-row">
             <div class="form-group">
               <label>Precio (S/) *</label>
-              <input type="number" [(ngModel)]="nuevoProducto.precio" name="precio" required>
+              <input type="number" [(ngModel)]="nuevoProducto.precio" name="precio" placeholder="0.00" min="0" required>
             </div>
             <div class="form-group">
               <label>Stock *</label>
-              <input type="number" [(ngModel)]="nuevoProducto.stock" name="stock" required>
+              <input type="number" [(ngModel)]="nuevoProducto.stock" name="stock" placeholder="0" min="0" required>
             </div>
           </div>
+
           <div class="form-group">
             <label>Categoría *</label>
             <select [(ngModel)]="categoriaSeleccionadaId" name="categoria" required>
-              <option [ngValue]="null" disabled selected>-- Selecciona --</option>
+              <option [ngValue]="null" disabled selected>-- Selecciona Categoría --</option>
               <option *ngFor="let cat of categorias" [value]="cat.id">{{ cat.nombre }}</option>
             </select>
           </div>
-          <button type="submit" class="btn-submit">Guardar Producto</button>
+
+          <div class="form-group">
+            <label>URL Imagen</label>
+            <input type="url" [(ngModel)]="nuevoProducto.imagenUrl" name="imagenUrl" placeholder="https://ejemplo.com/foto.jpg">
+          </div>
+
+          <div class="img-preview" *ngIf="nuevoProducto.imagenUrl">
+            <img [src]="nuevoProducto.imagenUrl" alt="Previsualización" (error)="nuevoProducto.imagenUrl = ''">
+          </div>
+
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea [(ngModel)]="nuevoProducto.descripcion" name="descripcion" rows="2" placeholder="Detalles de la zapatilla..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit" [disabled]="guardando">
+            {{ guardando ? 'Guardando...' : (modoEdicion ? 'Actualizar Producto' : 'Guardar Producto') }}
+          </button>
+
+          <button type="button" class="btn-cancel" *ngIf="modoEdicion" (click)="cancelarEdicion()">
+            Cancelar Edición
+          </button>
         </form>
       </section>
 
-      <!-- Tabla Productos -->
+      <!-- TABLA DE PRODUCTOS -->
       <section class="card table-card">
-        <h3>Listado de Productos ({{ productos.length }})</h3>
-        <table>
-          <thead>
-            <tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acción</th></tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let p of productos">
-              <td>#{{ p.id }}</td>
-              <td>{{ p.nombre }}</td>
-              <td>S/ {{ p.precio }}</td>
-              <td>{{ p.stock }} un.</td>
-              <td><button class="btn-delete" (click)="eliminarProducto(p.id)">🗑️</button></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-header">
+          <h3>Catálogo ({{ productosFiltrados.length }})</h3>
+          
+          <div class="search-box">
+            <input type="text" [(ngModel)]="busquedaProducto" placeholder="🔍 Buscar por nombre o marca...">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Foto</th>
+                <th>Producto</th>
+                <th>Marca</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of productosFiltrados">
+                <td>
+                  <div class="table-img-thumb">
+                    <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" [alt]="p.nombre">
+                    <span *ngIf="!p.imagenUrl">👟</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="product-info">
+                    <strong>{{ p.nombre }}</strong>
+                    <span class="color-sub" *ngIf="p.color">Color: {{ p.color }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="brand-pill">{{ p.marca || 'N/A' }}</span>
+                </td>
+                <td class="price-cell">S/ {{ p.precio | number:'1.2-2' }}</td>
+                <td>
+                  <span class="stock-badge" 
+                        [class.low-stock]="p.stock > 0 && p.stock <= 5"
+                        [class.out-stock]="p.stock === 0">
+                    {{ p.stock === 0 ? 'Agotado' : p.stock + ' un.' }}
+                  </span>
+                </td>
+                <td class="action-buttons">
+                  <button class="btn-edit" title="Editar" (click)="prepararEdicion(p)">✏️</button>
+                  <button class="btn-delete" title="Eliminar" (click)="eliminarProducto(p.id)">🗑️</button>
+                </td>
+              </tr>
+
+              <tr *ngIf="!loading && productosFiltrados.length === 0">
+                <td colspan="6" class="empty-msg">No se encontraron productos.</td>
+              </tr>
+              <tr *ngIf="loading">
+                <td colspan="6" class="loading-state">⌛ Cargando catálogo...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
+
     </div>
 
     <!-- 2. VISTA DE CATEGORÍAS -->
     <div class="dashboard-grid" *ngIf="seccionActual === 'categorias'">
-      <!-- Formulario Agregar Categoría -->
       <section class="card form-card">
         <h3>Nueva Categoría</h3>
         <form (ngSubmit)="crearCategoria()">
           <div class="form-group">
             <label>Nombre de Categoría *</label>
-            <input type="text" [(ngModel)]="nuevaCategoria.nombre" name="catNombre" placeholder="Ej. Zapatillas Urbanas" required>
+            <input type="text" [(ngModel)]="nuevaCategoria.nombre" name="catNombre" placeholder="Ej. Deportivas" required>
           </div>
           <div class="form-group">
             <label>Descripción</label>
             <textarea [(ngModel)]="nuevaCategoria.descripcion" name="catDesc" rows="3"></textarea>
           </div>
-          <button type="submit" class="btn-submit">Guardar Categoría</button>
+          <button type="submit" class="btn-submit" [disabled]="guardando">Guardar Categoría</button>
         </form>
       </section>
 
-      <!-- Tabla Categorías Existentes -->
       <section class="card table-card">
-        <h3>Categorías Registradas ({{ categorias.length }})</h3>
-        <table>
-          <thead>
-            <tr><th>ID</th><th>Nombre</th><th>Descripción</th></tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let c of categorias">
-              <td>#{{ c.id }}</td>
-              <td><strong>{{ c.nombre }}</strong></td>
-              <td>{{ c.descripcion || 'Sin descripción' }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-header">
+          <h3>Categorías Registradas ({{ categorias.length }})</h3>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Nombre</th><th>Descripción</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of categorias">
+                <td class="id-cell">#{{ c.id }}</td>
+                <td><strong>{{ c.nombre }}</strong></td>
+                <td>{{ c.descripcion || 'Sin descripción' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </div>
 
-    <!-- 3. VISTA DE PEDIDOS (SOLO LECTURA) -->
+    <!-- 3. VISTA DE PEDIDOS -->
     <div *ngIf="seccionActual === 'pedidos'" class="card">
-      <h3>Pedidos Realizados por los Clientes</h3>
-      <p style="color: #6b7280;">Aquí se visualizan las compras realizadas desde la tienda pública.</p>
-      <table>
-        <thead>
-          <tr><th># Pedido</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colspan="5" style="text-align:center; color:#9ca3af; padding: 20px;">
-              No hay pedidos registrados por el momento.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <h3>Pedidos Recibidos</h3>
+      <p class="section-desc">Monitoreo de compras y estado de despachos.</p>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th># Pedido</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="5" class="empty-msg">No hay pedidos registrados en el sistema.</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- 4. VISTA DE CLIENTES (SOLO LECTURA) -->
+    <!-- 4. VISTA DE CLIENTES -->
     <div *ngIf="seccionActual === 'clientes'" class="card">
-      <h3>Clientes Registrados</h3>
-      <table>
-        <thead>
-          <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colspan="4" style="text-align:center; color:#9ca3af; padding: 20px;">
-              No hay clientes registrados en el sistema.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <h3>Directorio de Clientes</h3>
+      <p class="section-desc">Lista de usuarios registrados e historial de interacción.</p>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th></tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="4" class="empty-msg">No hay clientes registrados en el sistema.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 5. NUEVA SECCIÓN: REPORTES -->
+    <div *ngIf="seccionActual === 'reportes'" class="card">
+      <h3>Resumen Ejecutivo de Ventas</h3>
+      <p class="section-desc">Métricas claves sobre las ventas de la tienda.</p>
+      <div class="placeholder-box">
+        <div class="chart-dummy">
+          <div class="bar" style="height: 40%"><span>Ene</span></div>
+          <div class="bar" style="height: 65%"><span>Feb</span></div>
+          <div class="bar" style="height: 85%"><span>Mar</span></div>
+          <div class="bar" style="height: 50%"><span>Abr</span></div>
+          <div class="bar active" style="height: 95%"><span>May</span></div>
+        </div>
+        <p class="chart-legend">📈 Incremento de ventas del **+24%** este último mes.</p>
+      </div>
+    </div>
+
+    <!-- 6. NUEVA SECCIÓN: CUPONES -->
+    <div *ngIf="seccionActual === 'cupones'" class="card">
+      <h3>Cupones y Promociones</h3>
+      <p class="section-desc">Crea códigos de descuento para promociones en la web.</p>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>Código</th><th>Descuento</th><th>Límite de Uso</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="code-pill">ESPINOZA2026</span></td>
+              <td>15% OFF</td>
+              <td>100 us.</td>
+              <td><span class="badge-active">Activo</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-pill">BIENVENIDA</span></td>
+              <td>10% OFF</td>
+              <td>Sin límite</td>
+              <td><span class="badge-active">Activo</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 7. NUEVA SECCIÓN: ENVÍOS -->
+    <div *ngIf="seccionActual === 'envios'" class="card">
+      <h3>Logística y Envíos</h3>
+      <p class="section-desc">Configuración de agencias de envío y tarifas por región.</p>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>Agencia</th><th>Cobertura</th><th>Tarifa Promedio</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Shalom Express</td><td>Nacional</td><td>S/ 15.00</td><td><span class="badge-active">Habilitado</span></td></tr>
+            <tr><td>Olva Courier</td><td>Nacional</td><td>S/ 18.00</td><td><span class="badge-active">Habilitado</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 8. NUEVA SECCIÓN: CONFIGURACIÓN -->
+    <div *ngIf="seccionActual === 'configuracion'" class="card">
+      <h3>Ajustes Generales de la Empresa</h3>
+      <form class="config-form" (ngSubmit)="$event.preventDefault()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Razón Social</label>
+            <input type="text" value="Grupo Espinoza S.A." readonly>
+          </div>
+          <div class="form-group">
+            <label>RUC</label>
+            <input type="text" value="20600000001">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Teléfono de Contacto / WhatsApp</label>
+            <input type="text" value="+51 987 654 321">
+          </div>
+          <div class="form-group">
+            <label>IGV (%)</label>
+            <input type="number" value="18">
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Guardar Ajustes</button>
+      </form>
     </div>
 
   </main>

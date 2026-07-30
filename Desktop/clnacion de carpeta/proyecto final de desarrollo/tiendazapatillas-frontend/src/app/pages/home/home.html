@@ -1,69 +1,100 @@
-<header class="top-nav">
+<!-- HEADER / NAVBAR -->
+<header class="navbar">
   <div class="logo">
-    GRUPO <Span> ESPINOZA</Span>
+    <span class="logo-bold">GRUPO</span> <span class="logo-accent">ESPINOZA</span>
   </div>
-  <nav class="nav-link">
-    <a href="#">Hombre</a>
-    <a href="#">Mujer</a>
-    <a href="#">Marca</a>
-    <a href="#" class="active">Categoria</a>
-    <a href="#" class="sale-link">SALE</a>
+
+  <nav class="nav-links">
+    <a routerLink="/home" class="nav-item">Hombre</a>
+    <a routerLink="/home" class="nav-item">Mujer</a>
+    <a routerLink="/home" class="nav-item">Marca</a>
+    <a routerLink="/home" class="nav-item">Categoría</a>
+    <a routerLink="/home" class="nav-item badge-oferta">OFERTA</a>
   </nav>
 
   <div class="nav-icons">
-    <button title="Buscar">🔍</button>
-    <button title="Favoritos">♡</button>
-    <button title="Mi Cuenta">👤</button>
-    <button title="Carrito">🛍️</button>
-  </div>
+    <button class="icon-btn" title="Buscar">
+      <i class="bi bi-search"></i>
+    </button>
+    <button class="icon-btn" title="Favoritos">
+      <i class="bi bi-heart"></i>
+    </button>
+    
+    <!-- 👤 BOTÓN PERSONITA: Redirige a /login -->
+    <button class="icon-btn" routerLink="/login" title="Iniciar Sesión">
+      <i class="bi bi-person"></i>
+    </button>
+
+    <button class="icon-btn cart-btn" title="Carrito">
+      <i class="bi bi-bag"></i>
+    </button>
+</div>
 </header>
 
-  <!-- CATÁLOGO DINÁMICO -->
-  <main class="container">
-    <h2 class="section-title">Productos Destacados</h2>
-    <div class="grid">
-      
-      <!-- Producto 1 -->
-      <div class="card">
-        <div class="card-img">NIKE AIR MAX</div>
-        <div class="card-body">
-          <span class="badge">Nike • Urbano</span>
-          <h3 class="card-title">Air Max 90</h3>
-          <p class="card-desc">Edición especial con amortiguación clásica.</p>
-          <div class="card-footer">
-            <span class="price">S/ 450.00</span>
-            <button class="btn-add">Agregar 🛒</button>
-          </div>
+<!-- MAIN CONTENT -->
+<main class="container">
+  <section class="section-title">
+    <span class="indicator"></span>
+    <h2>Productos Destacados</h2>
+  </section>
+
+  <!-- GRID DE PRODUCTOS -->
+  <div class="products-grid">
+    
+    <!-- Card 1 -->
+    <div class="product-card">
+      <div class="image-container">
+        <!-- Puedes colocar aquí una imagen real <img> si la tienes -->
+        <span class="placeholder-text">NIKE AIR MAX</span>
+      </div>
+      <div class="card-body">
+        <span class="tag">Nike • Urbano</span>
+        <h3>Air Max 90</h3>
+        <p class="description">Edición especial con amortiguación clásica.</p>
+        <div class="card-footer">
+          <span class="price">S/ 450.00</span>
+          <button class="add-btn">
+            Agregar <i class="fas fa-shopping-cart"></i>
+          </button>
         </div>
       </div>
-
-      <!-- Producto 2 -->
-      <div class="card">
-        <div class="card-img">ADIDAS SAMBA</div>
-        <div class="card-body">
-          <span class="badge">Adidas • Clásico</span>
-          <h3 class="card-title">Samba OG</h3>
-          <p class="card-desc">Diseño icónico en cuero con detalles en gamuza.</p>
-          <div class="card-footer">
-            <span class="price">S/ 380.00</span>
-            <button class="btn-add">Agregar 🛒</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Producto 3 -->
-      <div class="card">
-        <div class="card-img">PUMA PALERMO</div>
-        <div class="card-body">
-          <span class="badge">Puma • Retro</span>
-          <h3 class="card-title">Palermo Special</h3>
-          <p class="card-desc">Estilo retro futbolero para el día a día.</p>
-          <div class="card-footer">
-            <span class="price">S/ 320.00</span>
-            <button class="btn-add">Agregar 🛒</button>
-          </div>
-        </div>
-      </div>
-
     </div>
-  </main>
+
+    <!-- Card 2 -->
+    <div class="product-card featured-card">
+      <div class="image-container">
+        <span class="placeholder-text">ADIDAS SAMBA</span>
+      </div>
+      <div class="card-body">
+        <span class="tag">Adidas • Clásico</span>
+        <h3>Samba OG</h3>
+        <p class="description">Diseño icónico en cuero con detalles en gamaza.</p>
+        <div class="card-footer">
+          <span class="price">S/ 380.00</span>
+          <button class="add-btn">
+            Agregar <i class="fas fa-shopping-cart"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="product-card">
+      <div class="image-container">
+        <span class="placeholder-text">PUMA PALERMO</span>
+      </div>
+      <div class="card-body">
+        <span class="tag">Puma • Retro</span>
+        <h3>Especial de Palermo</h3>
+        <p class="description">Estilo retro futbolero para el día a día.</p>
+        <div class="card-footer">
+          <span class="price">S/ 320.00</span>
+          <button class="add-btn">
+            Agregar <i class="fas fa-shopping-cart"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
