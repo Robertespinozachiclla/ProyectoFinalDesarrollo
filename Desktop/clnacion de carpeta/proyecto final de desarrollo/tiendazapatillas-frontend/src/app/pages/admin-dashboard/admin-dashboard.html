@@ -1,351 +1,358 @@
-<div class="admin-layout">
-
-  <!-- 📁 SIDEBAR (MENÚ LATERAL) -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-icon"><i class="bi bi-shop"></i></div>
-      <div>
-        <h5 class="m-0 font-weight-bold">ESPINOZA</h5>
-        <small class="text-muted">E-commerce Admin</small>
+<div class="d-flex vh-100 bg-light">
+  <!-- SIDEBAR -->
+  <aside class="sidebar bg-dark text-white p-3 d-flex flex-column justify-content-between" style="width: 260px;">
+    <div>
+      <div class="d-flex align-items-center mb-4 text-decoration-none text-white fs-4 fw-bold">
+        <i class="bi bi-speedometer2 me-2 text-primary"></i> AdminPanel
       </div>
+      <hr class="border-secondary">
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+          <button class="nav-link text-white w-100 text-start" [class.active]="seccionActiva === 'dashboard'" (click)="irASeccion('dashboard')">
+            <i class="bi bi-house-door me-2"></i> Dashboard
+          </button>
+        </li>
+        <li>
+          <button class="nav-link text-white w-100 text-start" [class.active]="seccionActiva === 'productos'" (click)="irASeccion('productos')">
+            <i class="bi bi-box-seam me-2"></i> Productos
+          </button>
+        </li>
+        <li>
+          <button class="nav-link text-white w-100 text-start" [class.active]="seccionActiva === 'categorias'" (click)="irASeccion('categorias')">
+            <i class="bi bi-tags me-2"></i> Categorías
+          </button>
+        </li>
+        <li>
+          <button class="nav-link text-white w-100 text-start" [class.active]="seccionActiva === 'pedidos'" (click)="irASeccion('pedidos')">
+            <i class="bi bi-cart-check me-2"></i> Pedidos
+          </button>
+        </li>
+        <li>
+          <button class="nav-link text-white w-100 text-start" [class.active]="seccionActiva === 'clientes'" (click)="irASeccion('clientes')">
+            <i class="bi bi-people me-2"></i> Clientes
+          </button>
+        </li>
+      </ul>
     </div>
-
-    <div class="sidebar-section">MENÚ PRINCIPAL</div>
-    <ul class="nav flex-column menu-links">
-      <li class="nav-item">
-        <button class="nav-link-btn" [class.active]="seccionActiva === 'dashboard'" (click)="seccionActiva = 'dashboard'">
-          <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
-        </button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link-btn" [class.active]="seccionActiva === 'productos'" (click)="seccionActiva = 'productos'">
-          <i class="bi bi-box-seam-fill me-2"></i> Productos
-        </button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link-btn" [class.active]="seccionActiva === 'categorias'" (click)="seccionActiva = 'categorias'">
-          <i class="bi bi-tags-fill me-2"></i> Categorías
-        </button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link-btn" [class.active]="seccionActiva === 'pedidos'" (click)="seccionActiva = 'pedidos'">
-          <i class="bi bi-cart-check-fill me-2"></i> Pedidos
-        </button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link-btn" [class.active]="seccionActiva === 'clientes'" (click)="seccionActiva = 'clientes'">
-          <i class="bi bi-people-fill me-2"></i> Clientes
-        </button>
-      </li>
-    </ul>
-
-    <div class="sidebar-footer">
-      <div class="user-card mb-3">
-        <div class="avatar">A</div>
-        <div class="user-info">
-          <span class="user-name">Administrador</span>
-          <span class="user-role">Super Admin</span>
-        </div>
-      </div>
-      <button class="btn btn-logout w-100" (click)="cerrarSesion()">
+    <div>
+      <hr class="border-secondary">
+      <button class="btn btn-outline-danger w-100 text-start" (click)="cerrarSesion()">
         <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
       </button>
     </div>
   </aside>
 
-  <!-- 💻 CONTENIDO PRINCIPAL -->
-  <main class="main-wrapper">
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-grow-1 overflow-auto p-4">
 
-    <!-- 🔝 TOPBAR SUPERIOR -->
-    <header class="admin-topbar">
-      <div class="search-box">
-        <i class="bi bi-search"></i>
-        <input type="text" placeholder="Buscar en el panel..." [(ngModel)]="filtroGeneral">
-      </div>
-
-      <div class="topbar-actions">
-        <button class="btn btn-action-icon" title="Notificaciones">
-          <i class="bi bi-bell"></i>
-          <span class="badge-dot"></span>
-        </button>
-        <button class="btn btn-action-icon" title="Ajustes">
-          <i class="bi bi-gear"></i>
-        </button>
-        <div class="vr mx-2"></div>
-        <button class="btn btn-primary btn-sm rounded-pill px-3" (click)="irASeccion('productos')">
-          <i class="bi bi-plus-lg me-1"></i> Nuevo Producto
-        </button>
-      </div>
-    </header>
-
-    <div class="content-body">
-
-      <!-- ========================================== -->
-      <!-- SECCIÓN 1: DASHBOARD / RESUMEN             -->
-      <!-- ========================================== -->
-      <div *ngIf="seccionActiva === 'dashboard'">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <div>
-            <h3 class="fw-bold mb-1">Resumen del Sistema</h3>
-            <p class="text-muted small m-0">Bienvenido de nuevo, aquí tienes las métricas clave de hoy.</p>
-          </div>
-          <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-download me-1"></i> Exportar Reporte</button>
+    <!-- SECCIÓN: DASHBOARD GENERAL -->
+    <div *ngIf="seccionActiva === 'dashboard'">
+      <h3 class="fw-bold mb-4">Resumen General</h3>
+      <div class="row g-4">
+        <div class="col-md-3">
+          <div class="card bg-primary text-white shadow-sm border-0">
+            <div class="card-body d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="card-title text-white-50">Productos</h6>
+                <h2 class="fw-bold mb-0">{{ productos.length }}</h2>
+              </div>
+              <i class="bi bi-box-seam fs-1 opacity-50"></i>
+            </div>
           </div>
         </div>
-
-        <!-- TARJETAS DE MÉTRICAS -->
-        <div class="row g-3 mb-4">
-          <div class="col-md-3">
-            <div class="card card-kpi">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span class="kpi-title">TOTAL PRODUCTOS</span>
-                    <h3 class="kpi-value">{{ productos.length }}</h3>
-                    <span class="kpi-sub text-success"><i class="bi bi-arrow-up"></i> Actualizado</span>
-                  </div>
-                  <div class="kpi-icon bg-soft-primary"><i class="bi bi-box-seam"></i></div>
-                </div>
+        <div class="col-md-3">
+          <div class="card bg-success text-white shadow-sm border-0">
+            <div class="card-body d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="card-title text-white-50">Categorías</h6>
+                <h2 class="fw-bold mb-0">{{ categorias.length }}</h2>
               </div>
+              <i class="bi bi-tags fs-1 opacity-50"></i>
             </div>
           </div>
-
-          <div class="col-md-3">
-            <div class="card card-kpi">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span class="kpi-title">CATEGORÍAS</span>
-                    <h3 class="kpi-value">{{ categorias.length }}</h3>
-                    <span class="kpi-sub text-muted">Activas</span>
-                  </div>
-                  <div class="kpi-icon bg-soft-success"><i class="bi bi-tags"></i></div>
-                </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-warning text-dark shadow-sm border-0">
+            <div class="card-body d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="card-title opacity-75">Pedidos</h6>
+                <h2 class="fw-bold mb-0">{{ pedidos.length }}</h2>
               </div>
+              <i class="bi bi-cart-check fs-1 opacity-50"></i>
             </div>
           </div>
-
-          <div class="col-md-3">
-            <div class="card card-kpi">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span class="kpi-title">PEDIDOS HOY</span>
-                    <h3 class="kpi-value">12</h3>
-                    <span class="kpi-sub text-success"><i class="bi bi-arrow-up"></i> +15% vs ayer</span>
-                  </div>
-                  <div class="kpi-icon bg-soft-warning"><i class="bi bi-cart3"></i></div>
-                </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-info text-white shadow-sm border-0">
+            <div class="card-body d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="card-title text-white-50">Clientes</h6>
+                <h2 class="fw-bold mb-0">{{ clientes.length }}</h2>
               </div>
-            </div>
-          </div>
-
-          <div class="col-md-3">
-            <div class="card card-kpi">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span class="kpi-title">INGRESOS (EST.)</span>
-                    <h3 class="kpi-value">S/ 4,250.00</h3>
-                    <span class="kpi-sub text-success"><i class="bi bi-graph-up"></i> Meta mensual</span>
-                  </div>
-                  <div class="kpi-icon bg-soft-info"><i class="bi bi-currency-dollar"></i></div>
-                </div>
-              </div>
+              <i class="bi bi-people fs-1 opacity-50"></i>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- ========================================== -->
-      <!-- SECCIÓN 2: PRODUCTOS                       -->
-      <!-- ========================================== -->
-      <div *ngIf="seccionActiva === 'productos'">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="fw-bold m-0">Gestión de Productos</h4>
-          <div class="d-flex gap-2">
-            <button class="btn btn-light btn-sm border" (click)="limpiarFormularioProducto()"><i class="bi bi-arrow-clockwise me-1"></i> Limpiar</button>
-            <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-file-earmark-excel me-1"></i> Exportar</button>
-          </div>
-        </div>
-
-        <!-- Formulario Producto -->
-        <div class="card form-card mb-4 shadow-sm">
-          <div class="card-header bg-white border-bottom-0 pt-3">
-            <h6 class="fw-bold m-0 text-primary"><i class="bi bi-pencil-square me-1"></i> {{ editandoProducto ? 'Editar Producto' : 'Crear Nuevo Producto' }}</h6>
-          </div>
-          <div class="card-body pt-2">
-            <form (ngSubmit)="guardarProducto()">
-              <div class="row g-3">
-                <div class="col-md-4">
-                  <label class="form-label small font-weight-bold">Nombre del Producto:</label>
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.nombre" name="nombre" required placeholder="Ej: Nike Air Max 90">
+    <!-- SECCIÓN: PRODUCTOS -->
+    <div *ngIf="seccionActiva === 'productos'">
+      <h3 class="fw-bold mb-4">Gestión de Productos</h3>
+      <div class="row g-4">
+        <!-- FORMULARIO PRODUCTO -->
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-white fw-bold">
+              {{ editandoProducto ? 'Editar Producto' : 'Nuevo Producto' }}
+            </div>
+            <div class="card-body">
+              <form (ngSubmit)="guardarProducto()">
+                <div class="mb-3">
+                  <label class="form-label">Nombre</label>
+                  <input type="text" class="form-control" [(ngModel)]="nuevoProducto.nombre" name="prodNombre" required>
                 </div>
-
-                <div class="col-md-2">
-                  <label class="form-label small font-weight-bold">Precio (S/):</label>
-                  <input type="number" step="0.01" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.precio" name="precio" required>
+                <div class="mb-3">
+                  <label class="form-label">Descripción</label>
+                  <textarea class="form-control" [(ngModel)]="nuevoProducto.descripcion" name="prodDesc"></textarea>
                 </div>
-
-                <div class="col-md-2">
-                  <label class="form-label small font-weight-bold">Stock:</label>
-                  <input type="number" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.stock" name="stock" required>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Precio (S/)</label>
+                    <input type="number" class="form-control" [(ngModel)]="nuevoProducto.precio" name="prodPrecio" required min="0">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Stock</label>
+                    <input type="number" class="form-control" [(ngModel)]="nuevoProducto.stock" name="prodStock" required min="0">
+                  </div>
                 </div>
-
-                <!-- 👟 NUEVO CAMPO TALLA/TALLAS -->
-                <div class="col-md-2">
-                  <label class="form-label small font-weight-bold">Talla / Tallas:</label>
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.talla" name="talla" placeholder="Ej: 38, 39, 40, 41">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Marca</label>
+                    <input type="text" class="form-control" [(ngModel)]="nuevoProducto.marca" name="prodMarca">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Color</label>
+                    <input type="text" class="form-control" [(ngModel)]="nuevoProducto.color" name="prodColor">
+                  </div>
                 </div>
-
-                <div class="col-md-2">
-                  <label class="form-label small font-weight-bold">Categoría:</label>
-                  <select class="form-select form-select-sm" [(ngModel)]="nuevoProducto.categoria" name="categoria" [compareWith]="compararCategorias">
-                    <option [ngValue]="null">-- General --</option>
+                <div class="mb-3">
+                  <label class="form-label">Talla</label>
+                  <input type="text" class="form-control" [(ngModel)]="nuevoProducto.talla" name="prodTalla" placeholder="Ej. 39, 40, XL">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">URL de Imagen</label>
+                  <input type="text" class="form-control" [(ngModel)]="nuevoProducto.imagenUrl" name="prodImagen" placeholder="/productos/zapatilla.jpg">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Categoría</label>
+                  <select class="form-select" [(ngModel)]="nuevoProducto.categoria" name="prodCategoria" [compareWith]="compararCategorias">
+                    <option [ngValue]="null">-- Seleccionar --</option>
                     <option *ngFor="let cat of categorias" [ngValue]="cat">{{ cat.nombre }}</option>
                   </select>
                 </div>
-
-                <div class="col-md-6">
-                  <label class="form-label small font-weight-bold">Ruta de Imagen (`/productos/zapatilla.jpg`):</label>
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.imagenUrl" name="imagenUrl" placeholder="/productos/zapatilla.jpg">
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary flex-grow-1">
+                    {{ editandoProducto ? 'Actualizar' : 'Guardar' }}
+                  </button>
+                  <button type="button" class="btn btn-secondary" (click)="limpiarFormularioProducto()" *ngIf="editandoProducto">Cancelar</button>
                 </div>
-
-                <div class="col-md-6">
-                  <label class="form-label small font-weight-bold">Descripción:</label>
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevoProducto.descripcion" name="descripcion" placeholder="Breve descripción del producto...">
-                </div>
-
-                <div class="col-md-12 d-flex justify-content-end gap-2 mt-3">
-                  <button type="button" *ngIf="editandoProducto" class="btn btn-secondary btn-sm" (click)="limpiarFormularioProducto()">Cancelar</button>
-                  <button type="submit" class="btn btn-primary btn-sm px-4"><i class="bi bi-save me-1"></i> {{ editandoProducto ? 'Actualizar' : 'Guardar Producto' }}</button>
-                </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
 
-        <!-- Tabla Productos -->
-        <div class="card card-table shadow-sm">
+        <!-- TABLA PRODUCTOS -->
+        <div class="col-md-8">
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Imagen</th>
+                      <th>Nombre</th>
+                      <th>Precio</th>
+                      <th>Stock</th>
+                      <th>Categoría</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let p of productos">
+                      <td>
+                        <img [src]="p.imagenUrl || 'https://via.placeholder.com/50'" alt="Prod" style="width: 45px; height: 45px; object-fit: cover; border-radius: 4px;">
+                      </td>
+                      <td>
+                        <div class="fw-bold">{{ p.nombre }}</div>
+                        <small class="text-muted">{{ p.marca }}</small>
+                      </td>
+                      <td>S/ {{ p.precio }}</td>
+                      <td>
+                        <span class="badge" [ngClass]="p.stock > 5 ? 'bg-success' : 'bg-danger'">{{ p.stock }}</span>
+                      </td>
+                      <td>{{ p.categoria?.nombre || 'Sin categoría' }}</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-warning me-1" (click)="seleccionarProductoParaEditar(p)">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="eliminarProducto(p.id!)">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="productos.length === 0">
+                      <td colspan="6" class="text-center text-muted p-4">No hay productos registrados.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: CATEGORÍAS -->
+    <div *ngIf="seccionActiva === 'categorias'">
+      <h3 class="fw-bold mb-4">Gestión de Categorías</h3>
+      <div class="row g-4">
+        <!-- FORMULARIO CATEGORÍA -->
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-white fw-bold">
+              {{ editandoCategoria ? 'Editar Categoría' : 'Nueva Categoría' }}
+            </div>
+            <div class="card-body">
+              <form (ngSubmit)="guardarCategoria()">
+                <div class="mb-3">
+                  <label class="form-label">Nombre</label>
+                  <input type="text" class="form-control" [(ngModel)]="nuevaCategoria.nombre" name="catNombre" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Descripción</label>
+                  <textarea class="form-control" [(ngModel)]="nuevaCategoria.descripcion" name="catDesc"></textarea>
+                </div>
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary flex-grow-1">
+                    {{ editandoCategoria ? 'Actualizar' : 'Guardar' }}
+                  </button>
+                  <button type="button" class="btn btn-secondary" (click)="limpiarFormularioCategoria()" *ngIf="editandoCategoria">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- TABLA CATEGORÍAS -->
+        <div class="col-md-8">
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Descripción</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of categorias">
+                      <td>#{{ c.id }}</td>
+                      <td class="fw-bold">{{ c.nombre }}</td>
+                      <td>{{ c.descripcion || '-' }}</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-warning me-1" (click)="seleccionarCategoriaParaEditar(c)">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="eliminarCategoria(c.id!)">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="categorias.length === 0">
+                      <td colspan="4" class="text-center text-muted p-4">No hay categorías registradas.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: PEDIDOS -->
+    <div *ngIf="seccionActiva === 'pedidos'">
+      <h3 class="fw-bold mb-4">Gestión de Pedidos</h3>
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-hover align-middle m-0">
-              <thead>
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
                 <tr>
-                  <th>PRODUCTO</th>
-                  <th>CATEGORÍA</th>
-                  <th>TALLA(S)</th>
-                  <th>PRECIO</th>
-                  <th>STOCK</th>
-                  <th>ESTADO</th>
-                  <th class="text-end">ACCIONES</th>
+                  <th>ID Pedido</th>
+                  <th>Cliente</th>
+                  <th>Fecha</th>
+                  <th>Total</th>
+                  <th>Estado</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let prod of productos">
+                <tr *ngFor="let ped of pedidos">
+                  <td>#{{ ped.id }}</td>
+                  <td class="fw-bold">{{ ped.cliente?.nombre || 'Cliente General' }}</td>
+                  <td>{{ ped.fecha || 'N/A' }}</td>
+                  <td class="fw-bold text-success">S/ {{ ped.total }}</td>
                   <td>
-                    <div class="d-flex align-items-center gap-3">
-                      <img [src]="prod.imagenUrl || '/assets/no-image.png'" [alt]="prod.nombre" class="table-img">
-                      <div>
-                        <div class="fw-bold text-dark">{{ prod.nombre }}</div>
-                        <small class="text-muted text-truncate d-inline-block" style="max-width: 180px;">{{ prod.descripcion }}</small>
-                      </div>
-                    </div>
+                    <span class="badge bg-info text-dark">{{ ped.estado }}</span>
                   </td>
-                  <td><span class="badge bg-soft-primary text-primary">{{ prod.categoria?.nombre || 'General' }}</span></td>
-                  <td><span class="badge bg-light text-dark border">{{ prod.talla || 'N/A' }}</span></td>
-                  <td class="fw-bold">S/ {{ prod.precio }}</td>
-                  <td>{{ prod.stock }} u.</td>
-                  <td>
-                    <span class="badge" [ngClass]="prod.stock > 5 ? 'bg-soft-success text-success' : (prod.stock > 0 ? 'bg-soft-warning text-warning' : 'bg-soft-danger text-danger')">
-                      {{ prod.stock > 5 ? 'En Stock' : (prod.stock > 0 ? 'Pocas Unidades' : 'Agotado') }}
-                    </span>
-                  </td>
-                  <td class="text-end">
-                    <button class="btn btn-action-sm btn-light text-primary me-1" (click)="seleccionarProductoParaEditar(prod)" title="Editar"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-action-sm btn-light text-danger" (click)="eliminarProducto(prod.id!)" title="Eliminar"><i class="bi bi-trash"></i></button>
-                  </td>
+                </tr>
+                <tr *ngIf="pedidos.length === 0">
+                  <td colspan="5" class="text-center text-muted p-4">No hay pedidos registrados en la base de datos.</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- ========================================== -->
-      <!-- SECCIÓN 3: CATEGORÍAS                     -->
-      <!-- ========================================== -->
-      <div *ngIf="seccionActiva === 'categorias'">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="fw-bold m-0">Gestión de Categorías</h4>
-        </div>
-
-        <!-- Formulario Categoría -->
-        <div class="card form-card mb-4 shadow-sm">
-          <div class="card-body">
-            <form (ngSubmit)="guardarCategoria()">
-              <div class="row g-2">
-                <div class="col-md-5">
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevaCategoria.nombre" name="nombreCat" placeholder="Nombre de categoría" required>
-                </div>
-                <div class="col-md-5">
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevaCategoria.descripcion" name="descCat" placeholder="Descripción (Opcional)">
-                </div>
-                <div class="col-md-2 d-flex gap-1">
-                  <button type="submit" class="btn btn-primary btn-sm w-100">{{ editandoCategoria ? 'Actualizar' : 'Guardar' }}</button>
-                  <button type="button" *ngIf="editandoCategoria" (click)="limpiarFormularioCategoria()" class="btn btn-secondary btn-sm">Cancelar</button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- Tabla Categorías -->
-        <div class="card card-table shadow-sm">
+    <!-- SECCIÓN: CLIENTES -->
+    <div *ngIf="seccionActiva === 'clientes'">
+      <h3 class="fw-bold mb-4">Clientes Registrados</h3>
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-hover align-middle m-0">
-              <thead>
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
                 <tr>
                   <th>ID</th>
-                  <th>NOMBRE</th>
-                  <th>DESCRIPCIÓN</th>
-                  <th class="text-end">ACCIONES</th>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Teléfono</th>
+                  <th>Dirección</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let cat of categorias">
-                  <td>#{{ cat.id }}</td>
-                  <td class="fw-bold">{{ cat.nombre }}</td>
-                  <td class="text-muted">{{ cat.descripcion || 'Sin descripción' }}</td>
-                  <td class="text-end">
-                    <button class="btn btn-action-sm btn-light text-primary me-1" (click)="seleccionarCategoriaParaEditar(cat)"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-action-sm btn-light text-danger" (click)="eliminarCategoria(cat.id!)"><i class="bi bi-trash"></i></button>
-                  </td>
+                <tr *ngFor="let cli of clientes">
+                  <td>#{{ cli.id }}</td>
+                  <td class="fw-bold">{{ cli.nombre }}</td>
+                  <td>{{ cli.email }}</td>
+                  <td>{{ cli.telefono || '-' }}</td>
+                  <td>{{ cli.direccion || '-' }}</td>
+                </tr>
+                <tr *ngIf="clientes.length === 0">
+                  <td colspan="5" class="text-center text-muted p-4">No hay clientes registrados en la base de datos.</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-
-      <!-- SECCIÓN PEDIDOS -->
-      <div *ngIf="seccionActiva === 'pedidos'">
-        <h4 class="fw-bold mb-3">Gestión de Pedidos</h4>
-        <div class="card p-5 text-center text-muted">
-          <i class="bi bi-cart-x display-4 mb-2"></i>
-          <p>No hay pedidos pendientes por procesar.</p>
-        </div>
-      </div>
-
-      <!-- SECCIÓN CLIENTES -->
-      <div *ngIf="seccionActiva === 'clientes'">
-        <h4 class="fw-bold mb-3">Clientes Registrados</h4>
-        <div class="card p-5 text-center text-muted">
-          <i class="bi bi-person-x display-4 mb-2"></i>
-          <p>Base de datos de clientes actualizada.</p>
-        </div>
-      </div>
-
     </div>
+
   </main>
 </div>

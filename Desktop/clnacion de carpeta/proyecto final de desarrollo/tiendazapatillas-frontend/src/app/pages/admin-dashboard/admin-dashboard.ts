@@ -1,9 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
+// ==========================================
+// INTERFACES DEL MODELO DE DATOS
+// ==========================================
 export interface Categoria {
   id?: number;
   nombre: string;
@@ -19,8 +22,24 @@ export interface Producto {
   marca?: string;
   color?: string;
   talla?: string;
-  imagenUrl?: string; // 👟 Campo Talla
+  imagenUrl?: string;
   categoria?: Categoria | null;
+}
+
+export interface Cliente {
+  id?: number;
+  nombre: string;
+  email: string;
+  telefono?: string;
+  direccion?: string;
+}
+
+export interface Pedido {
+  id?: number;
+  fecha?: string;
+  total: number;
+  estado: string;
+  cliente?: Cliente;
 }
 
 @Component({
@@ -34,15 +53,22 @@ export class AdminDashboardComponent implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
 
+  // Endpoints del Backend Spring Boot
   private readonly API_PRODUCTOS = 'http://localhost:8080/api/productos';
   private readonly API_CATEGORIAS = 'http://localhost:8080/api/categorias';
+  private readonly API_PEDIDOS = 'http://localhost:8080/api/pedidos';
+  private readonly API_CLIENTES = 'http://localhost:8080/api/clientes';
 
   seccionActiva: string = 'dashboard';
   filtroGeneral: string = '';
 
+  // Colecciones de Datos
   productos: Producto[] = [];
   categorias: Categoria[] = [];
+  pedidos: Pedido[] = [];
+  clientes: Cliente[] = [];
 
+  // Formularios
   nuevoProducto: Producto = this.obtenerProductoVacio();
   editandoProducto: boolean = false;
   productoIdEditar: number | null = null;
@@ -54,6 +80,21 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.cargarProductos();
     this.cargarCategorias();
+    this.cargarPedidos();
+    this.cargarClientes();
+  }
+
+  /**
+   * Genera las cabeceras HTTP necesarias incluyendo el JWT guardado.
+   */
+  private obtenerHeaders(): { headers: HttpHeaders } {
+    const token = localStorage.getItem('token');
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      })
+    };
   }
 
   irASeccion(seccion: string): void {
@@ -64,7 +105,7 @@ export class AdminDashboardComponent implements OnInit {
   // LÓGICA DE PRODUCTOS
   // ==========================================
   cargarProductos(): void {
-    this.http.get<Producto[]>(this.API_PRODUCTOS).subscribe({
+    this.http.get<Producto[]>(this.API_PRODUCTOS, this.obtenerHeaders()).subscribe({
       next: (data) => (this.productos = data),
       error: (err) => console.error('Error al cargar productos:', err)
     });
@@ -77,7 +118,7 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     if (this.editandoProducto && this.productoIdEditar) {
-      this.http.put<Producto>(`${this.API_PRODUCTOS}/${this.productoIdEditar}`, this.nuevoProducto).subscribe({
+      this.http.put<Producto>(`${this.API_PRODUCTOS}/${this.productoIdEditar}`, this.nuevoProducto, this.obtenerHeaders()).subscribe({
         next: () => {
           this.limpiarFormularioProducto();
           this.cargarProductos();
@@ -85,7 +126,7 @@ export class AdminDashboardComponent implements OnInit {
         error: (err) => console.error('Error al actualizar producto:', err)
       });
     } else {
-      this.http.post<Producto>(this.API_PRODUCTOS, this.nuevoProducto).subscribe({
+      this.http.post<Producto>(this.API_PRODUCTOS, this.nuevoProducto, this.obtenerHeaders()).subscribe({
         next: () => {
           this.limpiarFormularioProducto();
           this.cargarProductos();
@@ -106,13 +147,14 @@ export class AdminDashboardComponent implements OnInit {
       marca: prod.marca || '',
       color: prod.color || '',
       talla: prod.talla || '',
+      imagenUrl: prod.imagenUrl || '',
       categoria: prod.categoria ? { id: prod.categoria.id, nombre: prod.categoria.nombre } : null
     };
   }
 
   eliminarProducto(id: number): void {
-    if (confirm('¿Eliminar producto de forma permanente?')) {
-      this.http.delete(`${this.API_PRODUCTOS}/${id}`).subscribe({
+    if (confirm('¿Desea eliminar este producto de forma permanente?')) {
+      this.http.delete(`${this.API_PRODUCTOS}/${id}`, this.obtenerHeaders()).subscribe({
         next: () => this.cargarProductos(),
         error: (err) => console.error('Error al eliminar producto:', err)
       });
@@ -126,14 +168,24 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   private obtenerProductoVacio(): Producto {
-    return { nombre: '', descripcion: '', precio: 0, stock: 0, marca: '', color: '', talla: '', categoria: null };
+    return {
+      nombre: '',
+      descripcion: '',
+      precio: 0,
+      stock: 0,
+      marca: '',
+      color: '',
+      talla: '',
+      imagenUrl: '',
+      categoria: null
+    };
   }
 
   // ==========================================
   // LÓGICA DE CATEGORÍAS
   // ==========================================
   cargarCategorias(): void {
-    this.http.get<Categoria[]>(this.API_CATEGORIAS).subscribe({
+    this.http.get<Categoria[]>(this.API_CATEGORIAS, this.obtenerHeaders()).subscribe({
       next: (data) => (this.categorias = data),
       error: (err) => console.error('Error al cargar categorías:', err)
     });
@@ -146,7 +198,7 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     if (this.editandoCategoria && this.categoriaIdEditar) {
-      this.http.put<Categoria>(`${this.API_CATEGORIAS}/${this.categoriaIdEditar}`, this.nuevaCategoria).subscribe({
+      this.http.put<Categoria>(`${this.API_CATEGORIAS}/${this.categoriaIdEditar}`, this.nuevaCategoria, this.obtenerHeaders()).subscribe({
         next: () => {
           this.limpiarFormularioCategoria();
           this.cargarCategorias();
@@ -154,7 +206,7 @@ export class AdminDashboardComponent implements OnInit {
         error: (err) => console.error('Error al actualizar categoría:', err)
       });
     } else {
-      this.http.post<Categoria>(this.API_CATEGORIAS, this.nuevaCategoria).subscribe({
+      this.http.post<Categoria>(this.API_CATEGORIAS, this.nuevaCategoria, this.obtenerHeaders()).subscribe({
         next: () => {
           this.limpiarFormularioCategoria();
           this.cargarCategorias();
@@ -172,7 +224,7 @@ export class AdminDashboardComponent implements OnInit {
 
   eliminarCategoria(id: number): void {
     if (confirm('¿Desea eliminar esta categoría?')) {
-      this.http.delete(`${this.API_CATEGORIAS}/${id}`).subscribe({
+      this.http.delete(`${this.API_CATEGORIAS}/${id}`, this.obtenerHeaders()).subscribe({
         next: () => this.cargarCategorias(),
         error: (err) => console.error('Error al eliminar categoría:', err)
       });
@@ -186,7 +238,24 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // ==========================================
-  // AUXILIARES
+  // LÓGICA DE PEDIDOS Y CLIENTES
+  // ==========================================
+  cargarPedidos(): void {
+    this.http.get<Pedido[]>(this.API_PEDIDOS, this.obtenerHeaders()).subscribe({
+      next: (data) => (this.pedidos = data),
+      error: (err) => console.error('Error al cargar pedidos:', err)
+    });
+  }
+
+  cargarClientes(): void {
+    this.http.get<Cliente[]>(this.API_CLIENTES, this.obtenerHeaders()).subscribe({
+      next: (data) => (this.clientes = data),
+      error: (err) => console.error('Error al cargar clientes:', err)
+    });
+  }
+
+  // ==========================================
+  // AUXILIARES Y NAVEGACIÓN
   // ==========================================
   cerrarSesion(): void {
     localStorage.removeItem('token');
