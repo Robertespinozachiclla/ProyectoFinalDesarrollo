@@ -31,6 +31,9 @@ public class Categoria {
 	
 	@Column(length =255)
 	private String descripcion;
+
+	@Column(length = 20)
+	private String genero; // HOMBRE, MUJER, UNISEX, TODOS
 	@OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore // Evita recursión infinita en respuestas JSON
     private List<Producto> productos = new ArrayList<>();
@@ -69,6 +72,14 @@ public class Categoria {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getGenero() {
+		return genero;
+	}
+
+	public void setGenero(String genero) {
+		this.genero = genero;
 	}
 
 	public LocalDateTime getCreatedAt() {

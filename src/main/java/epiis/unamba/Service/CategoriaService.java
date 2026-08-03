@@ -33,6 +33,7 @@ public class CategoriaService {
         Categoria existe = this.obtenerPorId(id);
         existe.setNombre(cat.getNombre());
         existe.setDescripcion(cat.getDescripcion());
+        existe.setGenero(cat.getGenero());
         return catRepo.save(existe);
     }
 
@@ -43,6 +44,9 @@ public class CategoriaService {
         }
         if (cat.getDescripcion() != null) {
             existe.setDescripcion(cat.getDescripcion());
+        }
+        if (cat.getGenero() != null) {
+            existe.setGenero(cat.getGenero());
         }
         return catRepo.save(existe);
     }

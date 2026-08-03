@@ -1,6 +1,7 @@
 package epiis.unamba.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import epiis.unamba.model.Producto;
@@ -16,6 +17,27 @@ public class ProductoService {
     
     public List<Producto> listar(){
         return prodRepo.findAll();
+    }
+
+    public List<Producto> listarPorGenero(String genero) {
+        return prodRepo.findByGeneroOrCategoriaGenero(genero);
+    }
+
+    public List<Producto> listarOfertas() {
+        return prodRepo.findByEsOfertaTrue();
+    }
+
+    public List<String> listarMarcas() {
+        return prodRepo.findAll().stream()
+                .map(Producto::getMarca)
+                .filter(m -> m != null && !m.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public List<Producto> listarPorMarca(String marca) {
+        return prodRepo.findByMarcaIgnoreCase(marca);
     }
     
     public Producto obtenerPorId(Long id) {
@@ -35,9 +57,21 @@ public class ProductoService {
         existe.setStock(prod.getStock());
         existe.setMarca(prod.getMarca());
         existe.setColor(prod.getColor());
-        
-        // 👟 NUEVO: Actualización de talla
         existe.setTalla(prod.getTalla());
+
+        // ✅ Imagen
+        if (prod.getImagenUrl() != null) {
+            existe.setImagenUrl(prod.getImagenUrl());
+        }
+
+        // ✅ Categoría
+        if (prod.getCategoria() != null) {
+            existe.setCategoria(prod.getCategoria());
+        }
+
+        // ✅ Género y Oferta
+        existe.setGenero(prod.getGenero());
+        existe.setEsOferta(prod.getEsOferta() != null ? prod.getEsOferta() : false);
         
         return prodRepo.save(existe);
     }
@@ -56,10 +90,16 @@ public class ProductoService {
             existe.setMarca(prod.getMarca());
         if (prod.getColor() != null)
             existe.setColor(prod.getColor());
-            
-        // 👟 NUEVO: Actualización parcial de talla
         if (prod.getTalla() != null)
             existe.setTalla(prod.getTalla());
+        if (prod.getImagenUrl() != null)
+            existe.setImagenUrl(prod.getImagenUrl());
+        if (prod.getCategoria() != null)
+            existe.setCategoria(prod.getCategoria());
+        if (prod.getGenero() != null)
+            existe.setGenero(prod.getGenero());
+        if (prod.getEsOferta() != null)
+            existe.setEsOferta(prod.getEsOferta());
             
         return prodRepo.save(existe);
     }
@@ -69,4 +109,4 @@ public class ProductoService {
         prodRepo.delete(existe);
         return true;
     }
-}
+}

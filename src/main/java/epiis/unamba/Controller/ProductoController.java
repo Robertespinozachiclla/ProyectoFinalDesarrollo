@@ -25,6 +25,30 @@ public class ProductoController {
         return prodService.listar();
     }
 
+    // 🔵 Filtrar por género (HOMBRE, MUJER, UNISEX)
+    @GetMapping("/genero/{genero}")
+    public List<Producto> listarPorGenero(@PathVariable String genero) {
+        return prodService.listarPorGenero(genero);
+    }
+
+    // 🟠 Obtener lista de marcas únicas
+    @GetMapping("/marcas")
+    public List<String> listarMarcas() {
+        return prodService.listarMarcas();
+    }
+
+    // 🟡 Filtrar productos por marca
+    @GetMapping("/marca/{marca}")
+    public List<Producto> listarPorMarca(@PathVariable String marca) {
+        return prodService.listarPorMarca(marca);
+    }
+
+    // 🔴 Productos en oferta
+    @GetMapping("/ofertas")
+    public List<Producto> listarOfertas() {
+        return prodService.listarOfertas();
+    }
+
     @GetMapping("/{id}")
     public Producto obtenerPorId(@PathVariable Long id) {
         return prodService.obtenerPorId(id);

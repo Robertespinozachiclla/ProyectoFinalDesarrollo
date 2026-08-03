@@ -51,6 +51,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                     // Endpoints públicos de autenticación
                     .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/public/**").permitAll() 
+                    .requestMatchers("/uploads/**", "/images/**").permitAll()
 
                     // Productos: GET público, CUD solo ADMIN
                     .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
@@ -63,6 +65,9 @@ public class SecurityConfig {
                     .requestMatchers("/api/categorias/**").hasRole("ADMIN")
 
                     // Gestión de compras y perfiles de cliente
+                    .requestMatchers(HttpMethod.POST, "/api/pedidos/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/detalle-pedidos/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/clientes/**").permitAll()
                     .requestMatchers("/api/pedidos/**").hasAnyRole("ADMIN", "CLIENTE")
                     .requestMatchers("/api/detalle-pedidos/**").hasAnyRole("ADMIN", "CLIENTE")
                     .requestMatchers("/api/clientes/**").hasAnyRole("ADMIN", "CLIENTE")

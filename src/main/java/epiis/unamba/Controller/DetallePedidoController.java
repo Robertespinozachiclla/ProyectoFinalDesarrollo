@@ -9,6 +9,7 @@ import epiis.unamba.service.DetallePedidoService;
 
 @RestController
 @RequestMapping("/api/detalle-pedidos")
+@CrossOrigin(origins = "http://localhost:4200")
 public class DetallePedidoController {
 
     private final DetallePedidoService detService;

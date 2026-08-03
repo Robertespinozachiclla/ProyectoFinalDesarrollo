@@ -33,12 +33,21 @@ public class Producto {
     @Column(length=50)
     private String color;
 
-    // 👟 NUEVO CAMPO: Agregado para almacenar la talla o tallas
     @Column(length=50)
     private String talla;
 
+    @Lob
+    @Column(name = "imagen_url", columnDefinition = "LONGTEXT")
+    private String imagenUrl;
+
+    @Column(length = 10)
+    private String genero; // HOMBRE, MUJER, UNISEX
+
+    @Column(name = "es_oferta")
+    private Boolean esOferta = false;
+
     @ManyToOne
-    @JoinColumn(name="categoria_id", nullable=false)
+    @JoinColumn(name="categoria_id", nullable=true)
     private Categoria categoria;
 
     @CreationTimestamp
@@ -48,6 +57,7 @@ public class Producto {
     @UpdateTimestamp
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
+	
 
     public Producto() {}
 
@@ -142,5 +152,29 @@ public class Producto {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
+
+    public Boolean getEsOferta() {
+        return esOferta;
+    }
+
+    public void setEsOferta(Boolean esOferta) {
+        this.esOferta = esOferta;
     }
 }
