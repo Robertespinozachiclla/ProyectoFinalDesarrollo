@@ -1,0 +1,84 @@
+<div class="login-card">
+  <!-- Botón Cerrar (Volver a la tienda) -->
+  <button type="button" class="close-btn" routerLink="/" title="Cerrar">&times;</button>
+
+  <!-- Logo de Grupo Espinoza desde la carpeta public -->
+  <div class="logo-container">
+    <img src="logo.png" alt="Grupo Espinoza SA" class="app-logo">
+  </div>
+
+  <h2 class="title">Iniciar sesión</h2>
+
+  <!-- Alerta de Error si credenciales son incorrectas -->
+  <div *ngIf="mensajeError" class="alert-error">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span>{{ mensajeError }}</span>
+  </div>
+
+  <!-- Formulario Angular -->
+  <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="login-form">
+    
+    <!-- Campo Usuario -->
+    <div class="form-group">
+      <label for="username">Usuario</label>
+      <input 
+        type="text" 
+        id="username" 
+        name="username"
+        [(ngModel)]="credenciales.username"
+        placeholder="Ej: jose123" 
+        class="form-input"
+        required>
+    </div>
+
+    <!-- Campo Contraseña -->
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input 
+        type="password" 
+        id="password" 
+        name="password"
+        [(ngModel)]="credenciales.password"
+        placeholder="••••••••" 
+        class="form-input"
+        required>
+    </div>
+
+    <!-- Olvidé mi contraseña -->
+    <div class="forgot-password">
+      <a href="#">Olvidé mi contraseña</a>
+    </div>
+
+    <!-- Botón Ingresar -->
+    <button 
+      type="submit" 
+      class="btn-primary" 
+      [disabled]="loginForm.invalid || cargando">
+      <span *ngIf="!cargando">Ingresar</span>
+      <span *ngIf="cargando">
+        <i class="bi bi-arrow-repeat spin"></i> Validando...
+      </span>
+    </button>
+  </form>
+
+  <!-- Divisor -->
+  <div class="divider">
+    <span>o inicia sesión con</span>
+  </div>
+
+  <!-- Botones de acceso rápido -->
+  <div class="social-login">
+    <button type="button" class="btn-social">
+      <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google" class="social-icon">
+      Google
+    </button>
+
+  </div>
+
+  <!-- Registro con redirección a /register -->
+  <div class="register-container">
+    <p>¿No tienes una cuenta?</p>
+    <!-- Opción A: Con etiqueta <button> -->
+<button type="button" class="btn-secondary" routerLink="/register">Regístrate</button>
+  </div>
+</div>

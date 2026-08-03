@@ -1,0 +1,254 @@
+<!-- HEADER / NAVBAR -->
+<header class="navbar">
+  <div class="logo" (click)="mostrarTodos()" style="cursor:pointer;">
+    <span class="logo-bold">GRUPO</span> <span class="logo-accent">ESPINOZA</span>
+  </div>
+
+  <nav class="nav-links">
+    <a class="nav-item" [class.active]="filtroActivo === 'hombre'" (click)="filtrarHombre()">Hombre</a>
+    <a class="nav-item" [class.active]="filtroActivo === 'mujer'" (click)="filtrarMujer()">Mujer</a>
+
+    <!-- DROPDOWN DE MARCAS -->
+    <div class="nav-dropdown-wrapper" (clickOutside)="cerrarDropdown()">
+      <a class="nav-item" [class.active]="filtroActivo === 'marcas'" (click)="mostrarMarcas()">
+        Marca <i class="bi bi-chevron-down" style="font-size:0.7rem;"></i>
+      </a>
+      <div class="marcas-dropdown" *ngIf="mostrarDropdownMarcas">
+        <div class="dropdown-inner">
+          <p class="dropdown-titulo">Selecciona una Marca</p>
+          <ng-container *ngIf="marcasDisponibles.length > 0; else sinMarcas">
+            <button
+              *ngFor="let marca of marcasDisponibles"
+              class="marca-chip"
+              [class.selected]="marcaSeleccionada === marca"
+              (click)="seleccionarMarca(marca)">
+              {{ marca }}
+            </button>
+          </ng-container>
+          <ng-template #sinMarcas>
+            <p class="text-muted small">No hay marcas registradas aún.</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <a class="nav-item badge-oferta" [class.active]="filtroActivo === 'ofertas'" (click)="filtrarOfertas()">
+      🔥 OFERTA
+    </a>
+  </nav>
+
+  <div class="nav-icons">
+    <button class="icon-btn" title="Buscar">
+      <i class="bi bi-search"></i>
+    </button>
+    <button class="icon-btn" title="Favoritos">
+      <i class="bi bi-heart"></i>
+    </button>
+    
+    <!-- 👤 BOTÓN PERSONITA: Redirige a /login -->
+    <button class="icon-btn" routerLink="/login" title="Iniciar Sesión">
+      <i class="bi bi-person"></i>
+    </button>
+
+    <!-- 🛒 BOTÓN CARRITO CON INSIGNIA CONTADORA DE PRODUCTOS -->
+    <button class="icon-btn cart-btn" (click)="toggleCarritoModal()" title="Ver Carrito">
+      <i class="bi bi-bag"></i>
+      <span class="cart-badge" *ngIf="carritoService.obtenerCantidadTotal() > 0">
+        {{ carritoService.obtenerCantidadTotal() }}
+      </span>
+    </button>
+  </div>
+</header>
+
+<!-- NOTIFICACIÓN TOAST AL AGREGAR PRODUCTO -->
+<div class="toast-notification" *ngIf="toastMensaje">
+  <i class="bi bi-check-circle-fill me-2"></i> {{ toastMensaje }}
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="container" (click)="cerrarDropdown()">
+
+  <!-- Título de sección dinámico -->
+  <section class="section-title">
+    <span class="indicator"></span>
+    <h2>{{ tituloSeccion }}</h2>
+
+    <!-- Chips de filtro activo -->
+    <div class="filtro-chips" *ngIf="filtroActivo !== 'todos'">
+      <span class="chip-filtro">
+        {{ filtroActivo === 'hombre' ? '👔 Hombre' :
+           filtroActivo === 'mujer' ? '👗 Mujer' :
+           filtroActivo === 'ofertas' ? '🔥 Ofertas' :
+           '🏷️ ' + marcaSeleccionada }}
+        <button class="chip-close" (click)="mostrarTodos()">✕</button>
+      </span>
+    </div>
+  </section>
+
+  <!-- Estado de Carga -->
+  <div *ngIf="loading" class="loading-grid">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6]"></div>
+  </div>
+
+  <!-- Lista Vacía -->
+  <div *ngIf="!loading && productosVisibles.length === 0" class="empty-state">
+    <i class="bi bi-box-seam" style="font-size: 3rem; color: #ccc;"></i>
+    <p>No se encontraron productos en esta categoría.</p>
+    <button class="btn-ver-todos" (click)="mostrarTodos()">Ver todos los productos</button>
+  </div>
+
+  <!-- GRID DINÁMICO DE PRODUCTOS -->
+  <div class="products-grid" *ngIf="!loading && productosVisibles.length > 0">
+    <div class="product-card" *ngFor="let prod of productosVisibles">
+
+      <!-- Badge de oferta -->
+      <div class="oferta-badge" *ngIf="prod.esOferta">🔥 OFERTA</div>
+
+      <div class="image-container">
+        <img
+          [src]="prod.imagenUrl || defaultImage"
+          (error)="onImageError($event)"
+          [alt]="prod.nombre"
+          style="width: 100%; height: 100%; object-fit: cover;"
+        />
+      </div>
+
+      <div class="card-body">
+        <div class="card-tags">
+          <span class="tag">{{ prod.categoria?.nombre || 'General' }}</span>
+          <span class="tag-genero" *ngIf="prod.genero">{{ prod.genero }}</span>
+        </div>
+        <h3>{{ prod.nombre }}</h3>
+        <p class="description">{{ prod.descripcion }}</p>
+        <p class="marca-text" *ngIf="prod.marca">
+          <i class="bi bi-award"></i> {{ prod.marca }}
+        </p>
+
+        <div class="card-footer">
+          <span class="price">S/ {{ prod.precio }}</span>
+          
+          <!-- 🛍️ BOTÓN AGREGAR FUNCIONAL -->
+          <button class="add-btn" (click)="agregarAlCarrito(prod, $event)">
+            Agregar <i class="bi bi-bag"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- 🛒 MODAL / DRAWER DEL CARRITO DE COMPRAS -->
+<div class="cart-overlay" *ngIf="mostrarModalCarrito" (click)="cerrarCarritoModal()">
+  <div class="cart-drawer" (click)="$event.stopPropagation()">
+    
+    <!-- Encabezado del Carrito -->
+    <div class="cart-header">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-bag-check fs-4 text-danger"></i>
+        <h4 class="m-0 fw-bold">Tu Carrito de Compras</h4>
+      </div>
+      <button class="close-btn" (click)="cerrarCarritoModal()">✕</button>
+    </div>
+
+    <!-- PANTALLA DE ÉXITO TRAS COMPRAR -->
+    <div class="cart-body" *ngIf="pedidoExitoso">
+      <div class="success-screen text-center py-5">
+        <div class="success-icon mb-3">🎉</div>
+        <h3 class="fw-bold text-success">¡Compra Realizada con Éxito!</h3>
+        <p class="text-muted">Tu pedido se ha registrado correctamente en la base de datos.</p>
+        
+        <div class="order-summary-box p-3 bg-light rounded text-start my-4 border">
+          <p class="mb-1"><strong>ID de Pedido:</strong> #{{ pedidoExitoso.id }}</p>
+          <p class="mb-1"><strong>Estado:</strong> <span class="badge bg-success">{{ pedidoExitoso.estado }}</span></p>
+          <p class="mb-0"><strong>Total Pagado:</strong> <span class="fw-bold text-primary">S/ {{ pedidoExitoso.total }}</span></p>
+        </div>
+
+        <button class="btn btn-dark w-100 py-2 fw-bold" (click)="cerrarCarritoModal()">Seguir Comprando</button>
+      </div>
+    </div>
+
+    <!-- CONTENIDO DEL CARRITO (LISTA DE PRODUCTOS Y FORMULARIO) -->
+    <div class="cart-body" *ngIf="!pedidoExitoso">
+
+      <!-- Carrito Vacío -->
+      <div *ngIf="itemsCarrito.length === 0" class="empty-cart text-center py-5">
+        <i class="bi bi-cart-x text-muted" style="font-size: 3.5rem;"></i>
+        <p class="mt-3 text-muted">Aún no has agregado ningún producto a tu carrito.</p>
+        <button class="btn btn-outline-dark mt-2" (click)="cerrarCarritoModal()">Explorar Zapatillas</button>
+      </div>
+
+      <!-- Lista de Productos en el Carrito -->
+      <div *ngIf="itemsCarrito.length > 0" class="cart-items-list">
+        <div class="cart-item-row" *ngFor="let item of itemsCarrito">
+          <img [src]="item.producto.imagenUrl || defaultImage" (error)="onImageError($event)" class="cart-item-img" />
+          
+          <div class="cart-item-info">
+            <h6 class="cart-item-title">{{ item.producto.nombre }}</h6>
+            <small class="text-muted" *ngIf="item.producto.marca">{{ item.producto.marca }}</small>
+            <div class="cart-item-price">S/ {{ item.producto.precio }} c/u</div>
+          </div>
+
+          <!-- Control de Cantidad -->
+          <div class="qty-controls">
+            <button class="qty-btn" (click)="decrementar(item)">-</button>
+            <span class="qty-num">{{ item.cantidad }}</span>
+            <button class="qty-btn" (click)="incrementar(item)">+</button>
+          </div>
+
+          <div class="cart-item-subtotal fw-bold">
+            S/ {{ item.producto.precio * item.cantidad }}
+          </div>
+
+          <button class="delete-btn" (click)="eliminarItem(item)" title="Eliminar">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Formulario de Datos del Cliente -->
+      <div *ngIf="itemsCarrito.length > 0" class="checkout-form-section mt-4 pt-3 border-top">
+        <h5 class="fw-bold mb-3"><i class="bi bi-person-vcard me-2"></i>Datos para la Entrega</h5>
+        
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Nombre Completo *</label>
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="datosCliente.nombre" placeholder="Ej. Robert Espinoza" required>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Correo Electrónico *</label>
+          <input type="email" class="form-control form-control-sm" [(ngModel)]="datosCliente.email" placeholder="ejemplo@correo.com" required>
+        </div>
+
+        <div class="row">
+          <div class="col-6 mb-2">
+            <label class="form-label small fw-bold">Teléfono</label>
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="datosCliente.telefono" placeholder="987654321">
+          </div>
+          <div class="col-6 mb-2">
+            <label class="form-label small fw-bold">Dirección</label>
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="datosCliente.direccion" placeholder="Av. Principal 123">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Pie del Carrito con Total y Botón de Compra -->
+    <div class="cart-footer" *ngIf="!pedidoExitoso && itemsCarrito.length > 0">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="fs-5 fw-bold">Total a Pagar:</span>
+        <span class="fs-4 fw-extrabold text-danger">S/ {{ carritoService.obtenerTotal() }}</span>
+      </div>
+
+      <button class="btn btn-danger w-100 py-2.5 fw-bold d-flex justify-content-center align-items-center gap-2" 
+              (click)="confirmarCompra()" 
+              [disabled]="procesandoCompra">
+        <span *ngIf="!procesandoCompra"><i class="bi bi-credit-card-2-front"></i> Realizar Compra</span>
+        <span *ngIf="procesandoCompra" class="spinner-border spinner-border-sm"></span>
+        <span *ngIf="procesandoCompra">Procesando...</span>
+      </button>
+    </div>
+
+  </div>
+</div>
