@@ -50,8 +50,8 @@
       <span class="fav-badge" *ngIf="favoritos.length > 0">{{ favoritos.length }}</span>
     </button>
 
-    <!-- 👤 BOTÓN PERSONITA -->
-    <button class="icon-btn" (click)="irALoginOConfirmar()" title="Iniciar Sesión">
+    <!-- 👤 BOTÓN DE CUENTA/PERFIL -->
+    <button class="icon-btn" [class.icon-active]="mostrarPanelCuenta" (click)="togglePanelCuenta()" title="Mi Cuenta">
       <i class="bi bi-person"></i>
     </button>
 
@@ -172,6 +172,52 @@
     <div class="fav-footer" *ngIf="favoritos.length > 0">
       <button class="btn-fav-clear" (click)="favoritos=[]; guardarFavoritosLocales()">
         <i class="bi bi-trash"></i> Limpiar todo
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PANEL DE CUENTA DE USUARIO
+═══════════════════════════════════════════════════════ -->
+<div class="account-overlay" *ngIf="mostrarPanelCuenta" (click)="cerrarPanelCuenta()">
+  <div class="account-panel" (click)="$event.stopPropagation()">
+    <!-- Header del Panel -->
+    <div class="account-header">
+      <div class="account-avatar">
+        <span>{{ datosUsuario.nombre.charAt(0).toUpperCase() }}</span>
+      </div>
+      <div class="account-user-info">
+        <h5 class="account-user-name">{{ datosUsuario.nombre }}</h5>
+        <p class="account-user-email">{{ datosUsuario.email }}</p>
+      </div>
+      <button class="close-btn" (click)="cerrarPanelCuenta()">✕</button>
+    </div>
+
+    <!-- Menú de Opciones -->
+    <div class="account-menu">
+      <button class="account-menu-item" (click)="irAMiCuenta()">
+        <i class="bi bi-person-circle"></i>
+        <span>Mi cuenta</span>
+      </button>
+      <button class="account-menu-item">
+        <i class="bi bi-gear"></i>
+        <span>Configuración</span>
+      </button>
+      <button class="account-menu-item">
+        <i class="bi bi-moon-stars"></i>
+        <span>Tema</span>
+      </button>
+      <button class="account-menu-item">
+        <i class="bi bi-clock-history"></i>
+        <span>Historial de compra</span>
+      </button>
+    </div>
+
+    <!-- Footer con Cerrar Sesión -->
+    <div class="account-footer">
+      <button class="btn-logout" (click)="cerrarSesion()">
+        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
       </button>
     </div>
   </div>
@@ -334,16 +380,16 @@
       />
     </div>
 
-    <!-- Selector de Tallas -->
-    <div class="panel-section" *ngIf="productoSeleccionado.talla">
+    <!-- Selector de opciones -->
+    <div class="panel-section" *ngIf="obtenerOpcionesProducto(productoSeleccionado).length > 0">
       <label class="section-label">Elige una opción:</label>
       <div class="size-options">
         <button
-          *ngFor="let size of ['7 US', '7.5 US', '8 US', '8.5 US', '9 US', '9.5 US']"
+          *ngFor="let opcion of obtenerOpcionesProducto(productoSeleccionado)"
           class="size-btn"
-          [class.selected]="tallaSeleccionada === size"
-          (click)="tallaSeleccionada = size">
-          {{ size }}
+          [class.selected]="tallaSeleccionada === opcion"
+          (click)="tallaSeleccionada = opcion">
+          {{ opcion }}
         </button>
       </div>
     </div>
@@ -352,9 +398,11 @@
     <div class="panel-section price-section">
       <div class="price-row">
         <span class="current-price">S/ {{ productoSeleccionado.precio }}</span>
-        <span class="discount-badge" *ngIf="productoSeleccionado.esOferta">-41%</span>
+        <span class="discount-badge" *ngIf="productoSeleccionado.esOferta && (productoSeleccionado.porcentajeDescuento || 0) > 0">-{{ productoSeleccionado.porcentajeDescuento }}%</span>
       </div>
-      <span class="original-price" *ngIf="productoSeleccionado.esOferta">S/ {{ (productoSeleccionado.precio / 0.59) | number:'1.0-0' }}</span>
+      <span class="original-price" *ngIf="productoSeleccionado.esOferta && obtenerPrecioOriginal(productoSeleccionado) !== null">
+        S/ {{ obtenerPrecioOriginal(productoSeleccionado) | number:'1.0-0' }}
+      </span>
     </div>
 
     <!-- Envío -->
@@ -394,11 +442,11 @@
     <!-- Características del Producto -->
     <div class="panel-section specs-section">
       <ul class="specs-list">
-        <li><strong>Disciplina:</strong> Running</li>
-        <li><strong>Tipo de ajuste:</strong> {{ productoSeleccionado.talla || 'Cordones' }}</li>
+        <li><strong>Disciplina:</strong> {{ productoSeleccionado.disciplina || 'Running' }}</li>
+        <li><strong>Tipo de ajuste:</strong> {{ productoSeleccionado.tipoAjuste || 'Cordones' }}</li>
         <li><strong>Género:</strong> {{ productoSeleccionado.genero || 'Hombre' }}</li>
-        <li><strong>Material:</strong> Sintético</li>
-        <li><strong>Material de la plantilla:</strong> PVC</li>
+        <li><strong>Material:</strong> {{ productoSeleccionado.material || 'Sintético' }}</li>
+        <li><strong>Material de la plantilla:</strong> {{ productoSeleccionado.materialPlantilla || 'PVC' }}</li>
       </ul>
     </div>
   </div>

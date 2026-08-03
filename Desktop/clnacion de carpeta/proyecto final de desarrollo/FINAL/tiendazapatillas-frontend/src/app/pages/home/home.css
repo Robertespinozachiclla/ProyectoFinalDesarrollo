@@ -1111,6 +1111,149 @@ body {
 .success-icon { font-size: 3.5rem; }
 
 /* ═══════════════════════════════════════════════════
+   PANEL DE CUENTA DE USUARIO
+═══════════════════════════════════════════════════ */
+.account-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-top: 70px;
+  animation: fadeIn 0.2s ease;
+}
+
+.account-panel {
+  width: 100%;
+  max-width: 380px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  overflow: hidden;
+  animation: slideDown 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  margin-right: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.account-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff3b30, #ff6b30);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.account-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.account-user-name {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-user-email {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-menu {
+  padding: 8px 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.account-menu-item {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.account-menu-item i {
+  font-size: 1.1rem;
+  color: #999;
+  flex-shrink: 0;
+}
+
+.account-menu-item:hover {
+  background: #f9f9f9;
+  color: #ff3b30;
+  border-left-color: #ff3b30;
+}
+
+.account-menu-item:hover i {
+  color: #ff3b30;
+}
+
+.account-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+}
+
+.btn-logout {
+  width: 100%;
+  background: #fff0ef;
+  color: #ff3b30;
+  border: 1.5px solid #ffccc9;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  background: #ff3b30;
+  color: #fff;
+  border-color: #ff3b30;
+}
+
+/* ═══════════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════════ */
 @media (max-width: 768px) {

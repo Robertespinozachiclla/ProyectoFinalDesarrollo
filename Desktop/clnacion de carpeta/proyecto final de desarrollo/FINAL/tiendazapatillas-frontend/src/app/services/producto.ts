@@ -12,6 +12,11 @@ export interface Producto {
   marca?: string;
   color?: string;
   talla?: string;
+  disciplina?: string;
+  tipoAjuste?: string;
+  material?: string;
+  materialPlantilla?: string;
+  porcentajeDescuento?: number;
   imagenUrl?: string;
   genero?: string;       // HOMBRE, MUJER, UNISEX
   esOferta?: boolean;

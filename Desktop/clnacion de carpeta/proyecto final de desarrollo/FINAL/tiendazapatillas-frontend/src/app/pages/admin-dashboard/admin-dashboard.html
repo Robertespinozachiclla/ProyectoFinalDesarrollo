@@ -264,8 +264,35 @@
                 </div>
 
                 <div class="field-group">
-                  <label class="field-label">Talla</label>
+                  <label class="field-label">Opciones / tallas</label>
                   <input type="text" class="field-input" [(ngModel)]="nuevoProducto.talla" name="prodTalla" placeholder="Ej. 39, 40, XL">
+                </div>
+
+                <div class="field-row">
+                  <div class="field-group">
+                    <label class="field-label">Disciplina</label>
+                    <input type="text" class="field-input" [(ngModel)]="nuevoProducto.disciplina" name="prodDisciplina" placeholder="Ej. Running">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label">Tipo de ajuste</label>
+                    <input type="text" class="field-input" [(ngModel)]="nuevoProducto.tipoAjuste" name="prodTipoAjuste" placeholder="Ej. Cordones">
+                  </div>
+                </div>
+
+                <div class="field-row">
+                  <div class="field-group">
+                    <label class="field-label">Material</label>
+                    <input type="text" class="field-input" [(ngModel)]="nuevoProducto.material" name="prodMaterial" placeholder="Ej. Sintético">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label">Material de la plantilla</label>
+                    <input type="text" class="field-input" [(ngModel)]="nuevoProducto.materialPlantilla" name="prodMaterialPlantilla" placeholder="Ej. EVA">
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label">Porcentaje de descuento (%)</label>
+                  <input type="number" class="field-input" [(ngModel)]="nuevoProducto.porcentajeDescuento" name="prodPorcentajeDescuento" min="0" max="100" placeholder="0">
                 </div>
 
                 <div class="field-row">

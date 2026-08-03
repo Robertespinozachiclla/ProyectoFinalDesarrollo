@@ -59,17 +59,43 @@ export class HomeComponent implements OnInit {
   favoritos: Producto[] = [];
   toastFavMensaje = '';
 
+  // ── CUENTA DE USUARIO ────────────────────────────────
+  mostrarPanelCuenta = false;
+  usuarioLogueado = false;
+  datosUsuario = {
+    nombre: '',
+    email: '',
+    rol: ''
+  };
+
   // SVG genérico de respaldo
   readonly defaultImage: string =
     'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" fill="%23cccccc" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/></svg>';
 
   ngOnInit(): void {
     this.cargarTodo();
+    this.verificarAutenticacion();
     this.carritoService.items$.subscribe(items => {
       this.itemsCarrito = items;
     });
     // Cargar favoritos del localStorage
     this.cargarFavoritosLocales();
+  }
+
+  verificarAutenticacion(): void {
+    const token = localStorage.getItem('token');
+    const nombreUsuario = localStorage.getItem('nombreUsuario');
+    const emailUsuario = localStorage.getItem('email');
+    const rolUsuario = localStorage.getItem('role');
+
+    if (token) {
+      this.usuarioLogueado = true;
+      this.datosUsuario.nombre = nombreUsuario || 'Usuario';
+      this.datosUsuario.email = emailUsuario || '';
+      this.datosUsuario.rol = rolUsuario || 'CLIENTE';
+    } else {
+      this.usuarioLogueado = false;
+    }
   }
 
   cargarTodo(): void {
@@ -215,6 +241,24 @@ export class HomeComponent implements OnInit {
     this.tallaSeleccionada = '';
   }
 
+  obtenerOpcionesProducto(producto: Producto | null): string[] {
+    if (!producto?.talla) return [];
+
+    return producto.talla
+      .split(',')
+      .map(opcion => opcion.trim())
+      .filter(Boolean);
+  }
+
+  obtenerPrecioOriginal(producto: Producto | null): number | null {
+    if (!producto) return null;
+
+    const porcentaje = producto.porcentajeDescuento ?? 0;
+    if (!porcentaje || porcentaje <= 0) return null;
+
+    return Number(((producto.precio * 100) / (100 - porcentaje)).toFixed(2));
+  }
+
   cerrarDetalle(): void {
     this.productoSeleccionado = null;
   }
@@ -242,19 +286,38 @@ export class HomeComponent implements OnInit {
     this.cerrarDetalle();
   }
 
-  irALoginOConfirmar(): void {
-    const token = localStorage.getItem('token');
-
-    if (token) {
-      const deseaSalir = confirm('Ya tienes una sesión activa. ¿Deseas cerrar sesión y volver al login?');
-      if (deseaSalir) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        this.router.navigate(['/login']);
-      }
+  togglePanelCuenta(): void {
+    if (!this.usuarioLogueado) {
+      // Si no está logueado, ir directo al login
+      this.router.navigate(['/login']);
       return;
     }
 
+    // Si está logueado, mostrar/ocultar el panel
+    this.mostrarPanelCuenta = !this.mostrarPanelCuenta;
+    if (this.mostrarPanelCuenta) {
+      this.mostrarPanelBusqueda = false;
+      this.mostrarPanelFavoritos = false;
+    }
+  }
+
+  cerrarPanelCuenta(): void {
+    this.mostrarPanelCuenta = false;
+  }
+
+  irAMiCuenta(): void {
+    this.cerrarPanelCuenta();
+    // Aquí puedes navegar a una página de perfil si la tienes
+    // this.router.navigate(['/mi-cuenta']);
+  }
+
+  cerrarSesion(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('nombreUsuario');
+    localStorage.removeItem('email');
+    this.usuarioLogueado = false;
+    this.mostrarPanelCuenta = false;
     this.router.navigate(['/login']);
   }
 
@@ -378,5 +441,6 @@ export class HomeComponent implements OnInit {
     this.cerrarBusqueda();
     this.cerrarFavoritos();
     this.cerrarDetalle();
+    this.cerrarPanelCuenta();
   }
 }

@@ -23,6 +23,11 @@ export interface Producto {
   marca?: string;
   color?: string;
   talla?: string;
+  disciplina?: string;
+  tipoAjuste?: string;
+  material?: string;
+  materialPlantilla?: string;
+  porcentajeDescuento?: number;
   imagenUrl?: string;
   genero?: string;       // HOMBRE, MUJER, UNISEX
   esOferta?: boolean;
@@ -210,6 +215,11 @@ export class AdminDashboardComponent implements OnInit {
       marca: prod.marca || '',
       color: prod.color || '',
       talla: prod.talla || '',
+      disciplina: prod.disciplina || 'Running',
+      tipoAjuste: prod.tipoAjuste || 'Cordones',
+      material: prod.material || 'Sintético',
+      materialPlantilla: prod.materialPlantilla || 'PVC',
+      porcentajeDescuento: prod.porcentajeDescuento || 0,
       imagenUrl: prod.imagenUrl || '',
       genero: prod.genero || 'HOMBRE',
       esOferta: prod.esOferta || false,
@@ -246,6 +256,11 @@ export class AdminDashboardComponent implements OnInit {
       marca: '',
       color: '',
       talla: '',
+      disciplina: 'Running',
+      tipoAjuste: 'Cordones',
+      material: 'Sintético',
+      materialPlantilla: 'PVC',
+      porcentajeDescuento: 0,
       imagenUrl: '',
       genero: 'HOMBRE',
       esOferta: false,
