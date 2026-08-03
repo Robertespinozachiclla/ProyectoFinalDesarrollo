@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import epiis.unamba.DTO.AuthResponse;
 import epiis.unamba.DTO.LoginRequest;
 import epiis.unamba.DTO.RegisterRequest;
+import epiis.unamba.model.Cliente;
+import epiis.unamba.model.Rol;
 import epiis.unamba.model.Usuario;
 import epiis.unamba.repository.UsuarioRepository;
 
@@ -15,17 +17,20 @@ public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
     private final UsuarioService usuarioService;
+    private final ClienteService clienteService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
     public AuthService(
             UsuarioRepository usuarioRepository,
             UsuarioService usuarioService,
+            ClienteService clienteService,
             JwtService jwtService,
             AuthenticationManager authenticationManager) {
 
         this.usuarioRepository = usuarioRepository;
         this.usuarioService = usuarioService;
+        this.clienteService = clienteService;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
     }
@@ -37,9 +42,21 @@ public class AuthService {
 
         usuario.setUsername(request.getUsername());
         usuario.setPassword(request.getPassword());
-        usuario.setRol(request.getRol());
+        usuario.setRol(request.getRol() != null ? request.getRol() : Rol.CLIENTE);
 
-        return usuarioService.registrar(usuario);
+        Usuario usuarioGuardado = usuarioService.registrar(usuario);
+
+        if (request.getNombre() != null || request.getCorreo() != null) {
+            Cliente cliente = new Cliente();
+            cliente.setNombre(request.getNombre() != null ? request.getNombre() : usuarioGuardado.getUsername());
+            cliente.setApellido(request.getApellido() != null ? request.getApellido() : "");
+            cliente.setCorreo(request.getCorreo() != null ? request.getCorreo() : usuarioGuardado.getUsername());
+            cliente.setTelefono(request.getTelefono());
+            cliente.setDireccion(request.getDireccion());
+            clienteService.guardar(cliente);
+        }
+
+        return usuarioGuardado;
     }
 
     // Login

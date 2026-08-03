@@ -79,6 +79,14 @@ public class Cliente {
 		this.correo = correo;
 	}
 
+	public String getEmail() {
+		return correo;
+	}
+
+	public void setEmail(String email) {
+		this.correo = email;
+	}
+
 	public String getTelefono() {
 		return telefono;
 	}
