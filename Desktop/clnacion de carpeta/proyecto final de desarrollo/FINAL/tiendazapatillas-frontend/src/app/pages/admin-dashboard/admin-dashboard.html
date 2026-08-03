@@ -1,350 +1,486 @@
-<div class="d-flex vh-100 bg-light">
-  <!-- SIDEBAR -->
-  <aside class="sidebar bg-dark text-white p-3 d-flex flex-column justify-content-between" style="width: 260px;">
-    <div>
-      <div class="d-flex align-items-center mb-4 text-decoration-none text-white fs-4 fw-bold">
-        <i class="bi bi-speedometer2 me-2 text-primary"></i> AdminPanel
+<div class="admin-layout">
+
+  <!-- ═══════════════════════════════════════════════════
+       SIDEBAR PREMIUM
+  ═══════════════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <!-- Brand -->
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <i class="bi bi-lightning-fill"></i>
+        </div>
+        <div>
+          <div class="brand-name">AdminPanel</div>
+          <div class="brand-sub">Grupo Espinoza</div>
+        </div>
       </div>
-      <hr class="border-secondary">
-      <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-          <button class="nav-link text-white w-100 text-start" [class.active]="seccionActiva === 'dashboard'" (click)="irASeccion('dashboard')">
-            <i class="bi bi-house-door me-2"></i> Dashboard
-          </button>
-        </li>
-        <li>
-          <button class="nav-link text-white w-100 text-start" [class.active]="seccionActiva === 'productos'" (click)="irASeccion('productos')">
-            <i class="bi bi-box-seam me-2"></i> Productos
-          </button>
-        </li>
-        <li>
-          <button class="nav-link text-white w-100 text-start" [class.active]="seccionActiva === 'categorias'" (click)="irASeccion('categorias')">
-            <i class="bi bi-tags me-2"></i> Categorías
-          </button>
-        </li>
-        <li>
-          <button class="nav-link text-white w-100 text-start" [class.active]="seccionActiva === 'pedidos'" (click)="irASeccion('pedidos')">
-            <i class="bi bi-cart-check me-2"></i> Pedidos
-          </button>
-        </li>
-        <li>
-          <button class="nav-link text-white w-100 text-start" [class.active]="seccionActiva === 'clientes'" (click)="irASeccion('clientes')">
-            <i class="bi bi-people me-2"></i> Clientes
-          </button>
-        </li>
-      </ul>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">MENÚ PRINCIPAL</div>
+
+        <button class="nav-link-btn" [class.active]="seccionActiva === 'dashboard'" (click)="irASeccion('dashboard')">
+          <span class="nav-icon-wrap"><i class="bi bi-grid-1x2-fill"></i></span>
+          <span>Dashboard</span>
+        </button>
+
+        <button class="nav-link-btn" [class.active]="seccionActiva === 'productos'" (click)="irASeccion('productos')">
+          <span class="nav-icon-wrap"><i class="bi bi-box-seam-fill"></i></span>
+          <span>Productos</span>
+        </button>
+
+        <button class="nav-link-btn" [class.active]="seccionActiva === 'categorias'" (click)="irASeccion('categorias')">
+          <span class="nav-icon-wrap"><i class="bi bi-tags-fill"></i></span>
+          <span>Categorías</span>
+        </button>
+
+        <button class="nav-link-btn" [class.active]="seccionActiva === 'pedidos'" (click)="irASeccion('pedidos')">
+          <span class="nav-icon-wrap"><i class="bi bi-cart-check-fill"></i></span>
+          <span>Pedidos</span>
+          <span class="nav-badge" *ngIf="pedidos.length > 0">{{ pedidos.length }}</span>
+        </button>
+
+        <button class="nav-link-btn" [class.active]="seccionActiva === 'clientes'" (click)="irASeccion('clientes')">
+          <span class="nav-icon-wrap"><i class="bi bi-people-fill"></i></span>
+          <span>Clientes</span>
+        </button>
+      </nav>
     </div>
-    <div>
-      <hr class="border-secondary">
-      <button class="btn btn-outline-danger w-100 text-start" (click)="cerrarSesion()">
-        <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">A</div>
+        <div class="user-info">
+          <span class="user-name">Administrador</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+      </div>
+      <button class="btn-logout" (click)="cerrarSesion()">
+        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
       </button>
     </div>
   </aside>
 
-  <!-- CONTENIDO PRINCIPAL -->
-  <main class="flex-grow-1 overflow-auto p-4">
+  <!-- ═══════════════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+  ═══════════════════════════════════════════════════ -->
+  <div class="main-wrapper">
 
-    <!-- SECCIÓN: DASHBOARD GENERAL -->
-    <div *ngIf="seccionActiva === 'dashboard'">
-      <h3 class="fw-bold mb-4">Resumen General</h3>
-      <div class="row g-4">
-        <div class="col-md-3">
-          <div class="card bg-primary text-white shadow-sm border-0">
-            <div class="card-body d-flex justify-content-between align-items-center">
-              <div>
-                <h6 class="card-title text-white-50">Productos</h6>
-                <h2 class="fw-bold mb-0">{{ productos.length }}</h2>
-              </div>
-              <i class="bi bi-box-seam fs-1 opacity-50"></i>
+    <!-- TOPBAR -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <h2 class="page-title">
+          <span *ngIf="seccionActiva === 'dashboard'">📊 Resumen General</span>
+          <span *ngIf="seccionActiva === 'productos'">📦 Gestión de Productos</span>
+          <span *ngIf="seccionActiva === 'categorias'">🏷️ Gestión de Categorías</span>
+          <span *ngIf="seccionActiva === 'pedidos'">🛒 Gestión de Pedidos</span>
+          <span *ngIf="seccionActiva === 'clientes'">👥 Clientes Registrados</span>
+        </h2>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-date">{{ seccionActiva | titlecase }}</span>
+        <div class="topbar-avatar">A</div>
+      </div>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <main class="content-body">
+
+      <!-- ══════════════════════════════════════
+           SECCIÓN: DASHBOARD
+      ══════════════════════════════════════ -->
+      <div *ngIf="seccionActiva === 'dashboard'">
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-blue">
+            <div class="kpi-icon-wrap">
+              <i class="bi bi-box-seam-fill"></i>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-label">Total Productos</span>
+              <span class="kpi-value">{{ productos.length }}</span>
+              <span class="kpi-sub">En catálogo</span>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-green">
+            <div class="kpi-icon-wrap">
+              <i class="bi bi-tags-fill"></i>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-label">Categorías</span>
+              <span class="kpi-value">{{ categorias.length }}</span>
+              <span class="kpi-sub">Activas</span>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-orange">
+            <div class="kpi-icon-wrap">
+              <i class="bi bi-cart-check-fill"></i>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-label">Pedidos</span>
+              <span class="kpi-value">{{ pedidos.length }}</span>
+              <span class="kpi-sub">Registrados</span>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-purple">
+            <div class="kpi-icon-wrap">
+              <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-label">Clientes</span>
+              <span class="kpi-value">{{ clientes.length }}</span>
+              <span class="kpi-sub">Registrados</span>
             </div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="card bg-success text-white shadow-sm border-0">
-            <div class="card-body d-flex justify-content-between align-items-center">
-              <div>
-                <h6 class="card-title text-white-50">Categorías</h6>
-                <h2 class="fw-bold mb-0">{{ categorias.length }}</h2>
-              </div>
-              <i class="bi bi-tags fs-1 opacity-50"></i>
+
+        <!-- Recent Tables Row -->
+        <div class="dashboard-bottom-grid">
+
+          <!-- Últimos productos -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h5><i class="bi bi-box-seam me-2"></i>Últimos Productos</h5>
+              <button class="dash-card-link" (click)="irASeccion('productos')">Ver todos →</button>
+            </div>
+            <div class="dash-table-wrap">
+              <table class="dash-table">
+                <thead>
+                  <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let p of productos.slice(0,5)">
+                    <td>
+                      <img [src]="p.imagenUrl || placeholderSvg50" (error)="$any($event.target).src = placeholderSvg50" class="table-img" />
+                    </td>
+                    <td>
+                      <div class="fw-bold" style="font-size:0.88rem;">{{ p.nombre }}</div>
+                      <small style="color:#999;">{{ p.marca || '-' }}</small>
+                    </td>
+                    <td><span class="price-pill">S/ {{ p.precio }}</span></td>
+                    <td>
+                      <span class="stock-badge" [class.low]="p.stock <= 5">{{ p.stock }}</span>
+                    </td>
+                  </tr>
+                  <tr *ngIf="productos.length === 0">
+                    <td colspan="4" class="empty-row">Sin productos registrados</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card bg-warning text-dark shadow-sm border-0">
-            <div class="card-body d-flex justify-content-between align-items-center">
-              <div>
-                <h6 class="card-title opacity-75">Pedidos</h6>
-                <h2 class="fw-bold mb-0">{{ pedidos.length }}</h2>
-              </div>
-              <i class="bi bi-cart-check fs-1 opacity-50"></i>
+
+          <!-- Últimos pedidos -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h5><i class="bi bi-cart-check me-2"></i>Últimos Pedidos</h5>
+              <button class="dash-card-link" (click)="irASeccion('pedidos')">Ver todos →</button>
             </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card bg-info text-white shadow-sm border-0">
-            <div class="card-body d-flex justify-content-between align-items-center">
-              <div>
-                <h6 class="card-title text-white-50">Clientes</h6>
-                <h2 class="fw-bold mb-0">{{ clientes.length }}</h2>
-              </div>
-              <i class="bi bi-people fs-1 opacity-50"></i>
+            <div class="dash-table-wrap">
+              <table class="dash-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let ped of pedidos.slice(0,5)">
+                    <td><span class="id-pill">#{{ ped.id }}</span></td>
+                    <td style="font-size:0.88rem; font-weight:600;">{{ ped.cliente?.nombre || 'General' }}</td>
+                    <td><span style="font-weight:700; color:#10b981;">S/ {{ ped.total }}</span></td>
+                    <td>
+                      <span class="estado-badge">{{ ped.estado }}</span>
+                    </td>
+                  </tr>
+                  <tr *ngIf="pedidos.length === 0">
+                    <td colspan="4" class="empty-row">Sin pedidos registrados</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- SECCIÓN: PRODUCTOS -->
-    <div *ngIf="seccionActiva === 'productos'">
-      <h3 class="fw-bold mb-4">Gestión de Productos</h3>
-      <div class="row g-4">
-        <!-- FORMULARIO PRODUCTO -->
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0">
-            <div class="card-header bg-white fw-bold">
+      <!-- ══════════════════════════════════════
+           SECCIÓN: PRODUCTOS
+      ══════════════════════════════════════ -->
+      <div *ngIf="seccionActiva === 'productos'">
+        <div class="content-grid">
+
+          <!-- FORMULARIO -->
+          <div class="form-panel">
+            <div class="form-panel-header">
+              <i class="bi bi-plus-circle-fill" *ngIf="!editandoProducto"></i>
+              <i class="bi bi-pencil-fill" *ngIf="editandoProducto"></i>
               {{ editandoProducto ? 'Editar Producto' : 'Nuevo Producto' }}
             </div>
-            <div class="card-body">
+            <div class="form-panel-body">
               <form (ngSubmit)="guardarProducto()">
-                <div class="mb-3">
-                  <label class="form-label">Nombre</label>
-                  <input type="text" class="form-control" [(ngModel)]="nuevoProducto.nombre" name="prodNombre" required>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Descripción</label>
-                  <textarea class="form-control" [(ngModel)]="nuevoProducto.descripcion" name="prodDesc"></textarea>
-                </div>
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Precio (S/)</label>
-                    <input type="number" class="form-control" [(ngModel)]="nuevoProducto.precio" name="prodPrecio" required min="0">
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Stock</label>
-                    <input type="number" class="form-control" [(ngModel)]="nuevoProducto.stock" name="prodStock" required min="0">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Marca</label>
-                    <input type="text" class="form-control" [(ngModel)]="nuevoProducto.marca" name="prodMarca">
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Color</label>
-                    <input type="text" class="form-control" [(ngModel)]="nuevoProducto.color" name="prodColor">
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Talla</label>
-                  <input type="text" class="form-control" [(ngModel)]="nuevoProducto.talla" name="prodTalla" placeholder="Ej. 39, 40, XL">
+
+                <div class="field-group">
+                  <label class="field-label">Nombre *</label>
+                  <input type="text" class="field-input" [(ngModel)]="nuevoProducto.nombre" name="prodNombre" placeholder="Ej. Nike Air Max" required>
                 </div>
 
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Género</label>
-                    <select class="form-select" [(ngModel)]="nuevoProducto.genero" name="prodGenero">
+                <div class="field-group">
+                  <label class="field-label">Descripción</label>
+                  <textarea class="field-input" [(ngModel)]="nuevoProducto.descripcion" name="prodDesc" rows="2" placeholder="Descripción breve del producto..."></textarea>
+                </div>
+
+                <div class="field-row">
+                  <div class="field-group">
+                    <label class="field-label">Precio (S/) *</label>
+                    <input type="number" class="field-input" [(ngModel)]="nuevoProducto.precio" name="prodPrecio" required min="0" placeholder="0.00">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label">Stock *</label>
+                    <input type="number" class="field-input" [(ngModel)]="nuevoProducto.stock" name="prodStock" required min="0" placeholder="0">
+                  </div>
+                </div>
+
+                <div class="field-row">
+                  <div class="field-group">
+                    <label class="field-label">Marca</label>
+                    <input type="text" class="field-input" [(ngModel)]="nuevoProducto.marca" name="prodMarca" placeholder="Ej. Nike">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label">Color</label>
+                    <input type="text" class="field-input" [(ngModel)]="nuevoProducto.color" name="prodColor" placeholder="Ej. Negro">
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label">Talla</label>
+                  <input type="text" class="field-input" [(ngModel)]="nuevoProducto.talla" name="prodTalla" placeholder="Ej. 39, 40, XL">
+                </div>
+
+                <div class="field-row">
+                  <div class="field-group">
+                    <label class="field-label">Género</label>
+                    <select class="field-input" [(ngModel)]="nuevoProducto.genero" name="prodGenero">
                       <option value="HOMBRE">Hombre</option>
                       <option value="MUJER">Mujer</option>
                       <option value="UNISEX">Unisex</option>
                     </select>
                   </div>
-                  <div class="col-md-6 mb-3 d-flex align-items-center pt-4">
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="esOfertaCheck" [(ngModel)]="nuevoProducto.esOferta" name="prodEsOferta">
-                      <label class="form-check-label fw-bold text-danger" for="esOfertaCheck">🔥 ¿En Oferta?</label>
-                    </div>
+                  <div class="field-group" style="justify-content:flex-end; align-items:center; padding-top:20px;">
+                    <label class="toggle-label">
+                      <input type="checkbox" [(ngModel)]="nuevoProducto.esOferta" name="prodEsOferta">
+                      <span class="toggle-text">🔥 En Oferta</span>
+                    </label>
                   </div>
                 </div>
 
-                <!-- 📸 CAMPO DE SELECCIÓN DE IMAGEN LOCAL -->
-                <div class="mb-3">
-                  <label class="form-label">Seleccionar Imagen del Zapato</label>
-                  <input 
-                    type="file" 
-                    class="form-control" 
-                    accept="image/*" 
-                    (change)="onFileSelected($event)" 
-                  />
+                <!-- Imagen -->
+                <div class="field-group">
+                  <label class="field-label">Imagen del Producto</label>
+                  <div class="file-upload-area">
+                    <input type="file" class="file-input" accept="image/*" (change)="onFileSelected($event)" id="fileInput">
+                    <label for="fileInput" class="file-label">
+                      <i class="bi bi-cloud-upload" style="font-size:1.5rem;"></i>
+                      <span>Seleccionar imagen</span>
+                      <small>JPG, PNG, WEBP</small>
+                    </label>
+                  </div>
                 </div>
 
-                <!-- 🖼️ PREVISUALIZACIÓN DE LA IMAGEN ELEGIDA CON SVG RESPALDO -->
-                <div *ngIf="nuevoProducto.imagenUrl" class="mb-3 text-center">
-                  <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Vista previa:</span>
-                  <img 
-                    [src]="nuevoProducto.imagenUrl || placeholderSvg100" 
-                    (error)="$any($event.target).src = placeholderSvg100"
-                    alt="Vista previa" 
-                    class="img-thumbnail" 
-                    style="max-height: 120px; object-fit: cover; border-radius: 8px;"
-                  />
+                <div *ngIf="nuevoProducto.imagenUrl" class="image-preview-wrap">
+                  <img [src]="nuevoProducto.imagenUrl || placeholderSvg100" (error)="$any($event.target).src = placeholderSvg100" alt="Vista previa" />
+                  <span class="preview-label">Vista previa</span>
                 </div>
 
-                <div class="mb-3">
-                  <label class="form-label">Categoría</label>
-                  <select class="form-select" [(ngModel)]="nuevoProducto.categoria" name="prodCategoria" [compareWith]="compararCategorias">
+                <div class="field-group">
+                  <label class="field-label">Categoría</label>
+                  <select class="field-input" [(ngModel)]="nuevoProducto.categoria" name="prodCategoria" [compareWith]="compararCategorias">
                     <option [ngValue]="null">-- Seleccionar --</option>
                     <option *ngFor="let cat of categorias" [ngValue]="cat">{{ cat.nombre }}</option>
                   </select>
                 </div>
-                <div class="d-flex gap-2">
-                  <button type="submit" class="btn btn-primary flex-grow-1">
-                    {{ editandoProducto ? 'Actualizar' : 'Guardar' }}
+
+                <div class="form-actions">
+                  <button type="submit" class="btn-primary-form">
+                    <i class="bi" [class.bi-save]="!editandoProducto" [class.bi-pencil-square]="editandoProducto"></i>
+                    {{ editandoProducto ? 'Actualizar' : 'Guardar Producto' }}
                   </button>
-                  <button type="button" class="btn btn-secondary" (click)="limpiarFormularioProducto()" *ngIf="editandoProducto">Cancelar</button>
+                  <button type="button" class="btn-cancel-form" (click)="limpiarFormularioProducto()" *ngIf="editandoProducto">
+                    Cancelar
+                  </button>
                 </div>
+
               </form>
             </div>
           </div>
-        </div>
 
-        <!-- TABLA PRODUCTOS -->
-        <div class="col-md-8">
-          <div class="card shadow-sm border-0">
-            <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                  <thead class="table-light">
-                    <tr>
-                      <th>Imagen</th>
-                      <th>Nombre</th>
-                      <th>Precio</th>
-                      <th>Stock</th>
-                      <th>Categoría</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let p of productos">
-                      <td>
-                        <!-- 🖼️ IMAGEN DE TABLA CON RESPALDO SVG EMBEBIDO -->
-                        <img 
-                          [src]="p.imagenUrl || placeholderSvg50" 
-                          (error)="$any($event.target).src = placeholderSvg50"
-                          alt="{{ p.nombre }}" 
-                          style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"
-                        />
-                      </td>
-                      <td>
-                        <div class="fw-bold">{{ p.nombre }}</div>
-                        <small class="text-muted">{{ p.marca }}</small>
-                      </td>
-                      <td>S/ {{ p.precio }}</td>
-                      <td>
-                        <span class="badge" [ngClass]="p.stock > 5 ? 'bg-success' : 'bg-danger'">{{ p.stock }}</span>
-                      </td>
-                      <td>{{ p.categoria?.nombre || 'Sin categoría' }}</td>
-                      <td>
-                        <button class="btn btn-sm btn-outline-warning me-1" (click)="seleccionarProductoParaEditar(p)">
-                          <i class="bi bi-pencil"></i>
+          <!-- TABLA DE PRODUCTOS -->
+          <div class="table-panel">
+            <div class="table-panel-header">
+              <span>{{ productos.length }} producto(s) registrado(s)</span>
+            </div>
+            <div class="table-scroll">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Imagen</th>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Categoría</th>
+                    <th>Género</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let p of productos">
+                    <td>
+                      <img [src]="p.imagenUrl || placeholderSvg50" (error)="$any($event.target).src = placeholderSvg50" class="table-img" />
+                    </td>
+                    <td>
+                      <div class="table-product-name">{{ p.nombre }}</div>
+                      <small class="table-product-brand">{{ p.marca || '-' }}</small>
+                    </td>
+                    <td><span class="price-pill">S/ {{ p.precio }}</span></td>
+                    <td>
+                      <span class="stock-badge" [class.low]="p.stock <= 5">{{ p.stock }}</span>
+                    </td>
+                    <td>{{ p.categoria?.nombre || 'Sin categoría' }}</td>
+                    <td>
+                      <span class="genero-badge" *ngIf="p.genero">{{ p.genero }}</span>
+                    </td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn-edit" (click)="seleccionarProductoParaEditar(p)" title="Editar">
+                          <i class="bi bi-pencil-fill"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" (click)="eliminarProducto(p.id!)">
-                          <i class="bi bi-trash"></i>
+                        <button class="btn-delete" (click)="eliminarProducto(p.id!)" title="Eliminar">
+                          <i class="bi bi-trash-fill"></i>
                         </button>
-                      </td>
-                    </tr>
-                    <tr *ngIf="productos.length === 0">
-                      <td colspan="6" class="text-center text-muted p-4">No hay productos registrados.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="productos.length === 0">
+                    <td colspan="7" class="empty-row">No hay productos registrados.</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
+
         </div>
       </div>
-    </div>
 
-    <!-- SECCIÓN: CATEGORÍAS -->
-    <div *ngIf="seccionActiva === 'categorias'">
-      <h3 class="fw-bold mb-4">Gestión de Categorías</h3>
-      <div class="row g-4">
-        <!-- FORMULARIO CATEGORÍA -->
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0">
-            <div class="card-header bg-white fw-bold">
+      <!-- ══════════════════════════════════════
+           SECCIÓN: CATEGORÍAS
+      ══════════════════════════════════════ -->
+      <div *ngIf="seccionActiva === 'categorias'">
+        <div class="content-grid">
+
+          <!-- FORMULARIO -->
+          <div class="form-panel">
+            <div class="form-panel-header">
+              <i class="bi bi-plus-circle-fill" *ngIf="!editandoCategoria"></i>
+              <i class="bi bi-pencil-fill" *ngIf="editandoCategoria"></i>
               {{ editandoCategoria ? 'Editar Categoría' : 'Nueva Categoría' }}
             </div>
-            <div class="card-body">
+            <div class="form-panel-body">
               <form (ngSubmit)="guardarCategoria()">
-                <div class="mb-3">
-                  <label class="form-label">Nombre</label>
-                  <input type="text" class="form-control" [(ngModel)]="nuevaCategoria.nombre" name="catNombre" required>
+                <div class="field-group">
+                  <label class="field-label">Nombre *</label>
+                  <input type="text" class="field-input" [(ngModel)]="nuevaCategoria.nombre" name="catNombre" placeholder="Ej. Running, Casual" required>
                 </div>
-                <div class="mb-3">
-                  <label class="form-label">Descripción</label>
-                  <textarea class="form-control" [(ngModel)]="nuevaCategoria.descripcion" name="catDesc"></textarea>
+                <div class="field-group">
+                  <label class="field-label">Descripción</label>
+                  <textarea class="field-input" [(ngModel)]="nuevaCategoria.descripcion" name="catDesc" rows="3" placeholder="Descripción de la categoría..."></textarea>
                 </div>
-                <div class="mb-3">
-                  <label class="form-label">Género Asignado</label>
-                  <select class="form-select" [(ngModel)]="nuevaCategoria.genero" name="catGenero">
+                <div class="field-group">
+                  <label class="field-label">Género Asignado</label>
+                  <select class="field-input" [(ngModel)]="nuevaCategoria.genero" name="catGenero">
                     <option value="TODOS">Todos / Unisex</option>
                     <option value="HOMBRE">Hombre</option>
                     <option value="MUJER">Mujer</option>
                   </select>
                 </div>
-                <div class="d-flex gap-2">
-                  <button type="submit" class="btn btn-primary flex-grow-1">
-                    {{ editandoCategoria ? 'Actualizar' : 'Guardar' }}
+                <div class="form-actions">
+                  <button type="submit" class="btn-primary-form">
+                    <i class="bi bi-save"></i>
+                    {{ editandoCategoria ? 'Actualizar' : 'Guardar Categoría' }}
                   </button>
-                  <button type="button" class="btn btn-secondary" (click)="limpiarFormularioCategoria()" *ngIf="editandoCategoria">Cancelar</button>
+                  <button type="button" class="btn-cancel-form" (click)="limpiarFormularioCategoria()" *ngIf="editandoCategoria">
+                    Cancelar
+                  </button>
                 </div>
               </form>
             </div>
           </div>
-        </div>
 
-        <!-- TABLA CATEGORÍAS -->
-        <div class="col-md-8">
-          <div class="card shadow-sm border-0">
-            <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                  <thead class="table-light">
-                    <tr>
-                      <th>ID</th>
-                      <th>Nombre</th>
-                      <th>Género</th>
-                      <th>Descripción</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let c of categorias">
-                      <td>#{{ c.id }}</td>
-                      <td class="fw-bold">{{ c.nombre }}</td>
-                      <td><span class="badge bg-secondary">{{ c.genero || 'TODOS' }}</span></td>
-                      <td>{{ c.descripcion || '-' }}</td>
-                      <td>
-                        <button class="btn btn-sm btn-outline-warning me-1" (click)="seleccionarCategoriaParaEditar(c)">
-                          <i class="bi bi-pencil"></i>
+          <!-- TABLA DE CATEGORÍAS -->
+          <div class="table-panel">
+            <div class="table-panel-header">
+              <span>{{ categorias.length }} categoría(s) registrada(s)</span>
+            </div>
+            <div class="table-scroll">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Género</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of categorias">
+                    <td><span class="id-pill">#{{ c.id }}</span></td>
+                    <td class="fw-bold" style="font-size:0.9rem;">{{ c.nombre }}</td>
+                    <td><span class="genero-badge">{{ c.genero || 'TODOS' }}</span></td>
+                    <td style="font-size:0.83rem; color:#777;">{{ c.descripcion || '-' }}</td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn-edit" (click)="seleccionarCategoriaParaEditar(c)">
+                          <i class="bi bi-pencil-fill"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" (click)="eliminarCategoria(c.id!)">
-                          <i class="bi bi-trash"></i>
+                        <button class="btn-delete" (click)="eliminarCategoria(c.id!)">
+                          <i class="bi bi-trash-fill"></i>
                         </button>
-                      </td>
-                    </tr>
-                    <tr *ngIf="categorias.length === 0">
-                      <td colspan="4" class="text-center text-muted p-4">No hay categorías registradas.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="categorias.length === 0">
+                    <td colspan="5" class="empty-row">No hay categorías registradas.</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
+
         </div>
       </div>
-    </div>
 
-    <!-- SECCIÓN: PEDIDOS -->
-    <div *ngIf="seccionActiva === 'pedidos'">
-      <h3 class="fw-bold mb-4">Gestión de Pedidos</h3>
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="table-light">
+      <!-- ══════════════════════════════════════
+           SECCIÓN: PEDIDOS
+      ══════════════════════════════════════ -->
+      <div *ngIf="seccionActiva === 'pedidos'">
+        <div class="table-panel full-width">
+          <div class="table-panel-header">
+            <span>{{ pedidos.length }} pedido(s) en total</span>
+          </div>
+          <div class="table-scroll">
+            <table class="admin-table">
+              <thead>
                 <tr>
                   <th>ID Pedido</th>
                   <th>Cliente</th>
@@ -355,32 +491,32 @@
               </thead>
               <tbody>
                 <tr *ngFor="let ped of pedidos">
-                  <td>#{{ ped.id }}</td>
-                  <td class="fw-bold">{{ ped.cliente?.nombre || 'Cliente General' }}</td>
-                  <td>{{ ped.fecha || 'N/A' }}</td>
-                  <td class="fw-bold text-success">S/ {{ ped.total }}</td>
-                  <td>
-                    <span class="badge bg-info text-dark">{{ ped.estado }}</span>
-                  </td>
+                  <td><span class="id-pill">#{{ ped.id }}</span></td>
+                  <td style="font-weight:700; font-size:0.9rem;">{{ ped.cliente?.nombre || 'Cliente General' }}</td>
+                  <td style="font-size:0.85rem; color:#777;">{{ ped.fecha || 'N/A' }}</td>
+                  <td><span style="font-weight:800; color:#10b981;">S/ {{ ped.total }}</span></td>
+                  <td><span class="estado-badge">{{ ped.estado }}</span></td>
                 </tr>
                 <tr *ngIf="pedidos.length === 0">
-                  <td colspan="5" class="text-center text-muted p-4">No hay pedidos registrados en la base de datos.</td>
+                  <td colspan="5" class="empty-row">No hay pedidos registrados en la base de datos.</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- SECCIÓN: CLIENTES -->
-    <div *ngIf="seccionActiva === 'clientes'">
-      <h3 class="fw-bold mb-4">Clientes Registrados</h3>
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="table-light">
+      <!-- ══════════════════════════════════════
+           SECCIÓN: CLIENTES
+      ══════════════════════════════════════ -->
+      <div *ngIf="seccionActiva === 'clientes'">
+        <div class="table-panel full-width">
+          <div class="table-panel-header">
+            <span>{{ clientes.length }} cliente(s) registrado(s)</span>
+          </div>
+          <div class="table-scroll">
+            <table class="admin-table">
+              <thead>
                 <tr>
                   <th>ID</th>
                   <th>Nombre</th>
@@ -391,21 +527,26 @@
               </thead>
               <tbody>
                 <tr *ngFor="let cli of clientes">
-                  <td>#{{ cli.id }}</td>
-                  <td class="fw-bold">{{ cli.nombre }}</td>
-                  <td>{{ cli.email }}</td>
-                  <td>{{ cli.telefono || '-' }}</td>
-                  <td>{{ cli.direccion || '-' }}</td>
+                  <td><span class="id-pill">#{{ cli.id }}</span></td>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                      <div class="client-avatar">{{ cli.nombre.charAt(0).toUpperCase() }}</div>
+                      <span style="font-weight:700; font-size:0.9rem;">{{ cli.nombre }}</span>
+                    </div>
+                  </td>
+                  <td style="font-size:0.85rem; color:#555;">{{ cli.email }}</td>
+                  <td style="font-size:0.85rem;">{{ cli.telefono || '-' }}</td>
+                  <td style="font-size:0.85rem; color:#777;">{{ cli.direccion || '-' }}</td>
                 </tr>
                 <tr *ngIf="clientes.length === 0">
-                  <td colspan="5" class="text-center text-muted p-4">No hay clientes registrados en la base de datos.</td>
+                  <td colspan="5" class="empty-row">No hay clientes registrados en la base de datos.</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    </div>
 
-  </main>
+    </main>
+  </div>
 </div>

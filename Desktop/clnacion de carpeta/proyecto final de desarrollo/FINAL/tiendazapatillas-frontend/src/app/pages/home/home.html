@@ -1,6 +1,7 @@
 <!-- HEADER / NAVBAR -->
 <header class="navbar">
   <div class="logo" (click)="mostrarTodos()" style="cursor:pointer;">
+    <span class="logo-icon">👟</span>
     <span class="logo-bold">GRUPO</span> <span class="logo-accent">ESPINOZA</span>
   </div>
 
@@ -38,19 +39,23 @@
   </nav>
 
   <div class="nav-icons">
-    <button class="icon-btn" title="Buscar">
+    <!-- 🔍 BOTÓN DE BÚSQUEDA FUNCIONAL -->
+    <button class="icon-btn" [class.icon-active]="mostrarPanelBusqueda" (click)="toggleBusqueda()" title="Buscar productos">
       <i class="bi bi-search"></i>
     </button>
-    <button class="icon-btn" title="Favoritos">
-      <i class="bi bi-heart"></i>
+
+    <!-- ❤️ BOTÓN DE FAVORITOS FUNCIONAL -->
+    <button class="icon-btn fav-btn" [class.icon-active]="mostrarPanelFavoritos" (click)="toggleFavoritos()" title="Mis Favoritos">
+      <i class="bi" [class.bi-heart-fill]="favoritos.length > 0" [class.bi-heart]="favoritos.length === 0"></i>
+      <span class="fav-badge" *ngIf="favoritos.length > 0">{{ favoritos.length }}</span>
     </button>
-    
-    <!-- 👤 BOTÓN PERSONITA: Redirige a /login -->
-    <button class="icon-btn" routerLink="/login" title="Iniciar Sesión">
+
+    <!-- 👤 BOTÓN PERSONITA -->
+    <button class="icon-btn" (click)="irALoginOConfirmar()" title="Iniciar Sesión">
       <i class="bi bi-person"></i>
     </button>
 
-    <!-- 🛒 BOTÓN CARRITO CON INSIGNIA CONTADORA DE PRODUCTOS -->
+    <!-- 🛒 BOTÓN CARRITO CON INSIGNIA -->
     <button class="icon-btn cart-btn" (click)="toggleCarritoModal()" title="Ver Carrito">
       <i class="bi bi-bag"></i>
       <span class="cart-badge" *ngIf="carritoService.obtenerCantidadTotal() > 0">
@@ -60,13 +65,155 @@
   </div>
 </header>
 
-<!-- NOTIFICACIÓN TOAST AL AGREGAR PRODUCTO -->
+<!-- ═══════════════════════════════════════════════════════
+     PANEL DE BÚSQUEDA DESPLEGABLE
+═══════════════════════════════════════════════════════ -->
+<div class="search-overlay" *ngIf="mostrarPanelBusqueda" (click)="cerrarBusqueda()">
+  <div class="search-panel" (click)="$event.stopPropagation()">
+    <div class="search-input-wrapper">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        id="search-input"
+        type="text"
+        class="search-input"
+        placeholder="Buscar zapatillas, marcas, categorías..."
+        [(ngModel)]="textoBusqueda"
+        (input)="buscarProductos()"
+        autocomplete="off"
+      />
+      <button class="search-close" (click)="cerrarBusqueda()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Resultados -->
+    <div class="search-results" *ngIf="textoBusqueda.length > 0">
+      <div *ngIf="resultadosBusqueda.length === 0" class="search-empty">
+        <i class="bi bi-search" style="font-size:2rem; color:#ddd;"></i>
+        <p>No se encontraron resultados para "<strong>{{ textoBusqueda }}</strong>"</p>
+      </div>
+
+      <div class="search-result-item" *ngFor="let prod of resultadosBusqueda" (click)="seleccionarResultado(prod)">
+        <div class="search-result-img">
+          <img [src]="prod.imagenUrl || defaultImage" (error)="onImageError($event)" [alt]="prod.nombre" />
+        </div>
+        <div class="search-result-info">
+          <span class="search-result-name">{{ prod.nombre }}</span>
+          <span class="search-result-meta">{{ prod.marca || 'Sin marca' }} · {{ prod.categoria?.nombre || 'General' }}</span>
+        </div>
+        <span class="search-result-price">S/ {{ prod.precio }}</span>
+        <i class="bi bi-arrow-right search-result-arrow"></i>
+      </div>
+
+      <div class="search-footer" *ngIf="resultadosBusqueda.length > 0">
+        {{ resultadosBusqueda.length }} resultado(s) encontrado(s)
+      </div>
+    </div>
+
+    <div class="search-hints" *ngIf="textoBusqueda.length === 0">
+      <p class="search-hint-title">Búsquedas populares</p>
+      <div class="search-tags">
+        <button class="search-tag" (click)="textoBusqueda='Nike'; buscarProductos()">Nike</button>
+        <button class="search-tag" (click)="textoBusqueda='Adidas'; buscarProductos()">Adidas</button>
+        <button class="search-tag" (click)="textoBusqueda='Running'; buscarProductos()">Running</button>
+        <button class="search-tag" (click)="textoBusqueda='Mujer'; buscarProductos()">Mujer</button>
+        <button class="search-tag" (click)="textoBusqueda='Hombre'; buscarProductos()">Hombre</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PANEL DE FAVORITOS (DRAWER LATERAL)
+═══════════════════════════════════════════════════════ -->
+<div class="fav-overlay" *ngIf="mostrarPanelFavoritos" (click)="cerrarFavoritos()">
+  <div class="fav-drawer" (click)="$event.stopPropagation()">
+    <div class="fav-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <i class="bi bi-heart-fill" style="color:#ff3b30; font-size:1.3rem;"></i>
+        <h4 style="margin:0; font-weight:800;">Mis Favoritos</h4>
+        <span class="fav-count-badge" *ngIf="favoritos.length > 0">{{ favoritos.length }}</span>
+      </div>
+      <button class="close-btn" (click)="cerrarFavoritos()">✕</button>
+    </div>
+
+    <div class="fav-body">
+      <!-- Sin favoritos -->
+      <div *ngIf="favoritos.length === 0" class="fav-empty">
+        <div class="fav-empty-icon">💔</div>
+        <h5>No tienes favoritos aún</h5>
+        <p>Toca el ❤️ en cualquier producto para guardarlo aquí</p>
+        <button class="btn-explorar" (click)="cerrarFavoritos()">Explorar Zapatillas</button>
+      </div>
+
+      <!-- Lista de favoritos -->
+      <div class="fav-list" *ngIf="favoritos.length > 0">
+        <div class="fav-item" *ngFor="let fav of favoritos">
+          <div class="fav-item-img" (click)="cerrarFavoritos(); abrirDetalle(fav)">
+            <img [src]="fav.imagenUrl || defaultImage" (error)="onImageError($event)" [alt]="fav.nombre" />
+          </div>
+          <div class="fav-item-info">
+            <span class="fav-item-brand">{{ fav.marca || 'Sin marca' }}</span>
+            <h6 class="fav-item-name" (click)="cerrarFavoritos(); abrirDetalle(fav)">{{ fav.nombre }}</h6>
+            <span class="fav-item-price">S/ {{ fav.precio }}</span>
+          </div>
+          <div class="fav-item-actions">
+            <button class="fav-add-cart" (click)="agregarAlCarrito(fav)" title="Agregar al carrito">
+              <i class="bi bi-bag-plus"></i>
+            </button>
+            <button class="fav-remove" (click)="toggleFavorito(fav)" title="Quitar de favoritos">
+              <i class="bi bi-heart-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fav-footer" *ngIf="favoritos.length > 0">
+      <button class="btn-fav-clear" (click)="favoritos=[]; guardarFavoritosLocales()">
+        <i class="bi bi-trash"></i> Limpiar todo
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICACIONES TOAST -->
 <div class="toast-notification" *ngIf="toastMensaje">
   <i class="bi bi-check-circle-fill me-2"></i> {{ toastMensaje }}
+</div>
+<div class="toast-notification toast-fav" *ngIf="toastFavMensaje">
+  {{ toastFavMensaje }}
 </div>
 
 <!-- MAIN CONTENT -->
 <main class="container" (click)="cerrarDropdown()">
+
+  <!-- Hero Banner -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <span class="hero-tag">Nueva Colección 2026</span>
+      <h1 class="hero-title">Zapatillas que <span class="hero-highlight">marcan</span> la diferencia</h1>
+      <p class="hero-sub">Encuentra el par perfecto para cada ocasión</p>
+      <div class="hero-actions">
+        <button class="hero-btn-primary" (click)="filtrarOfertas()">Ver Ofertas 🔥</button>
+        <button class="hero-btn-secondary" (click)="mostrarTodos()">Explorar todo</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-value">{{ todosLosProductos.length }}+</span>
+        <span class="stat-label">Productos</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-value">{{ marcasDisponibles.length }}+</span>
+        <span class="stat-label">Marcas</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-value">100%</span>
+        <span class="stat-label">Originales</span>
+      </div>
+    </div>
+  </section>
 
   <!-- Título de sección dinámico -->
   <section class="section-title">
@@ -99,10 +246,20 @@
 
   <!-- GRID DINÁMICO DE PRODUCTOS -->
   <div class="products-grid" *ngIf="!loading && productosVisibles.length > 0">
-    <div class="product-card" *ngFor="let prod of productosVisibles">
+    <div class="product-card" *ngFor="let prod of productosVisibles" (click)="abrirDetalle(prod)" tabindex="0" role="button">
 
       <!-- Badge de oferta -->
       <div class="oferta-badge" *ngIf="prod.esOferta">🔥 OFERTA</div>
+
+      <!-- Botón favorito sobre la tarjeta -->
+      <button
+        class="card-fav-btn"
+        [class.active]="esFavorito(prod)"
+        (click)="toggleFavorito(prod, $event)"
+        [title]="esFavorito(prod) ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+      >
+        <i class="bi" [class.bi-heart-fill]="esFavorito(prod)" [class.bi-heart]="!esFavorito(prod)"></i>
+      </button>
 
       <div class="image-container">
         <img
@@ -126,7 +283,7 @@
 
         <div class="card-footer">
           <span class="price">S/ {{ prod.precio }}</span>
-          
+
           <!-- 🛍️ BOTÓN AGREGAR FUNCIONAL -->
           <button class="add-btn" (click)="agregarAlCarrito(prod, $event)">
             Agregar <i class="bi bi-bag"></i>
@@ -137,6 +294,118 @@
   </div>
 
 </main>
+
+<!-- PANEL LATERAL DE DETALLE DEL PRODUCTO -->
+<div class="detalle-panel" [class.active]="productoSeleccionado" *ngIf="productoSeleccionado">
+  <div class="panel-header">
+    <h4 class="m-0">Detalles del Producto</h4>
+    <button class="btn-close" (click)="cerrarDetalle()">✕</button>
+  </div>
+
+  <div class="panel-content">
+    <!-- Imagen del Producto -->
+    <div class="panel-image-wrap">
+      <img
+        [src]="productoSeleccionado.imagenUrl || defaultImage"
+        (error)="onImageError($event)"
+        [alt]="productoSeleccionado.nombre"
+      />
+    </div>
+
+    <!-- Marca y Nombre -->
+    <div class="panel-header-info">
+      <span class="brand">{{ productoSeleccionado.marca || 'NIKE' }}</span>
+      <h2>{{ productoSeleccionado.nombre }}</h2>
+    </div>
+
+    <!-- Color -->
+    <div class="panel-section">
+      <label class="section-label">Color:</label>
+      <span class="color-text">{{ productoSeleccionado.color || 'Negro' }}</span>
+    </div>
+
+    <!-- Imagen del Color (pequeña miniatura) -->
+    <div class="panel-section">
+      <img
+        [src]="productoSeleccionado.imagenUrl || defaultImage"
+        (error)="onImageError($event)"
+        alt="Color"
+        class="color-thumbnail"
+      />
+    </div>
+
+    <!-- Selector de Tallas -->
+    <div class="panel-section" *ngIf="productoSeleccionado.talla">
+      <label class="section-label">Elige una opción:</label>
+      <div class="size-options">
+        <button
+          *ngFor="let size of ['7 US', '7.5 US', '8 US', '8.5 US', '9 US', '9.5 US']"
+          class="size-btn"
+          [class.selected]="tallaSeleccionada === size"
+          (click)="tallaSeleccionada = size">
+          {{ size }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Precio y Descuento -->
+    <div class="panel-section price-section">
+      <div class="price-row">
+        <span class="current-price">S/ {{ productoSeleccionado.precio }}</span>
+        <span class="discount-badge" *ngIf="productoSeleccionado.esOferta">-41%</span>
+      </div>
+      <span class="original-price" *ngIf="productoSeleccionado.esOferta">S/ {{ (productoSeleccionado.precio / 0.59) | number:'1.0-0' }}</span>
+    </div>
+
+    <!-- Envío -->
+    <div class="panel-section">
+      <span class="delivery-text">✓ Envío en 180 minutos</span>
+    </div>
+
+    <!-- Cantidad -->
+    <div class="panel-section quantity-section">
+      <label class="section-label">Cantidad:</label>
+      <div class="quantity-controls">
+        <button class="qty-btn" (click)="decrementarCantidad()">−</button>
+        <input type="number" [(ngModel)]="cantidadSeleccionada" class="qty-input" min="1" />
+        <button class="qty-btn" (click)="incrementarCantidad()">+</button>
+      </div>
+    </div>
+
+    <!-- Botón Agregar al Carrito -->
+    <div class="panel-section">
+      <button class="btn-add-to-cart" (click)="agregarDetalleAlCarrito()">
+        Agregar al Carro
+      </button>
+    </div>
+
+    <!-- Favorito -->
+    <div class="panel-section">
+      <button
+        class="btn-favorite"
+        [class.active]="esFavorito(productoSeleccionado)"
+        (click)="toggleFavorito(productoSeleccionado)"
+      >
+        <i class="bi" [class.bi-heart-fill]="esFavorito(productoSeleccionado)" [class.bi-heart]="!esFavorito(productoSeleccionado)"></i>
+        {{ esFavorito(productoSeleccionado) ? 'En Favoritos ❤️' : 'Agregar a favoritos' }}
+      </button>
+    </div>
+
+    <!-- Características del Producto -->
+    <div class="panel-section specs-section">
+      <ul class="specs-list">
+        <li><strong>Disciplina:</strong> Running</li>
+        <li><strong>Tipo de ajuste:</strong> {{ productoSeleccionado.talla || 'Cordones' }}</li>
+        <li><strong>Género:</strong> {{ productoSeleccionado.genero || 'Hombre' }}</li>
+        <li><strong>Material:</strong> Sintético</li>
+        <li><strong>Material de la plantilla:</strong> PVC</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- FONDO OSCURO DETRÁS DEL PANEL -->
+<div class="detalle-backdrop" *ngIf="productoSeleccionado" (click)="cerrarDetalle()"></div>
 
 <!-- 🛒 MODAL / DRAWER DEL CARRITO DE COMPRAS -->
 <div class="cart-overlay" *ngIf="mostrarModalCarrito" (click)="cerrarCarritoModal()">
@@ -168,7 +437,7 @@
       </div>
     </div>
 
-    <!-- CONTENIDO DEL CARRITO (LISTA DE PRODUCTOS Y FORMULARIO) -->
+    <!-- CONTENIDO DEL CARRITO -->
     <div class="cart-body" *ngIf="!pedidoExitoso">
 
       <!-- Carrito Vacío -->
