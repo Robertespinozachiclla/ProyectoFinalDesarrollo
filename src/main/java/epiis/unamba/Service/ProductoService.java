@@ -58,6 +58,11 @@ public class ProductoService {
         existe.setMarca(prod.getMarca());
         existe.setColor(prod.getColor());
         existe.setTalla(prod.getTalla());
+        existe.setDisciplina(prod.getDisciplina());
+        existe.setTipoAjuste(prod.getTipoAjuste());
+        existe.setMaterial(prod.getMaterial());
+        existe.setMaterialPlantilla(prod.getMaterialPlantilla());
+        existe.setPorcentajeDescuento(prod.getPorcentajeDescuento() != null ? prod.getPorcentajeDescuento() : 0);
 
         // ✅ Imagen
         if (prod.getImagenUrl() != null) {
@@ -92,6 +97,16 @@ public class ProductoService {
             existe.setColor(prod.getColor());
         if (prod.getTalla() != null)
             existe.setTalla(prod.getTalla());
+        if (prod.getDisciplina() != null)
+            existe.setDisciplina(prod.getDisciplina());
+        if (prod.getTipoAjuste() != null)
+            existe.setTipoAjuste(prod.getTipoAjuste());
+        if (prod.getMaterial() != null)
+            existe.setMaterial(prod.getMaterial());
+        if (prod.getMaterialPlantilla() != null)
+            existe.setMaterialPlantilla(prod.getMaterialPlantilla());
+        if (prod.getPorcentajeDescuento() != null)
+            existe.setPorcentajeDescuento(prod.getPorcentajeDescuento());
         if (prod.getImagenUrl() != null)
             existe.setImagenUrl(prod.getImagenUrl());
         if (prod.getCategoria() != null)
@@ -109,4 +124,4 @@ public class ProductoService {
         prodRepo.delete(existe);
         return true;
     }
-}
+}

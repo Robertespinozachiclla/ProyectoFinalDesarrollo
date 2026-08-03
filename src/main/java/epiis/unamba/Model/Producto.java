@@ -36,6 +36,21 @@ public class Producto {
     @Column(length=50)
     private String talla;
 
+    @Column(length=100)
+    private String disciplina;
+
+    @Column(name="tipo_ajuste", length=100)
+    private String tipoAjuste;
+
+    @Column(length=100)
+    private String material;
+
+    @Column(name="material_plantilla", length=100)
+    private String materialPlantilla;
+
+    @Column(name="porcentaje_descuento")
+    private Integer porcentajeDescuento = 0;
+
     @Lob
     @Column(name = "imagen_url", columnDefinition = "LONGTEXT")
     private String imagenUrl;
@@ -128,6 +143,46 @@ public class Producto {
 
     public void setTalla(String talla) {
         this.talla = talla;
+    }
+
+    public String getDisciplina() {
+        return disciplina;
+    }
+
+    public void setDisciplina(String disciplina) {
+        this.disciplina = disciplina;
+    }
+
+    public String getTipoAjuste() {
+        return tipoAjuste;
+    }
+
+    public void setTipoAjuste(String tipoAjuste) {
+        this.tipoAjuste = tipoAjuste;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
+    public String getMaterialPlantilla() {
+        return materialPlantilla;
+    }
+
+    public void setMaterialPlantilla(String materialPlantilla) {
+        this.materialPlantilla = materialPlantilla;
+    }
+
+    public Integer getPorcentajeDescuento() {
+        return porcentajeDescuento;
+    }
+
+    public void setPorcentajeDescuento(Integer porcentajeDescuento) {
+        this.porcentajeDescuento = porcentajeDescuento;
     }
 
     public Categoria getCategoria() {
