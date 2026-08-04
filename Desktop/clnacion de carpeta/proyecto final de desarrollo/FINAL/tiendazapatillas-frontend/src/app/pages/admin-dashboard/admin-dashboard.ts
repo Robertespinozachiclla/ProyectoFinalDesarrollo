@@ -207,24 +207,13 @@ export class AdminDashboardComponent implements OnInit {
   seleccionarProductoParaEditar(prod: Producto): void {
     this.editandoProducto = true;
     this.productoIdEditar = prod.id!;
-    this.nuevoProducto = {
-      nombre: prod.nombre,
-      descripcion: prod.descripcion || '',
-      precio: prod.precio,
-      stock: prod.stock,
-      marca: prod.marca || '',
-      color: prod.color || '',
-      talla: prod.talla || '',
-      disciplina: prod.disciplina || 'Running',
-      tipoAjuste: prod.tipoAjuste || 'Cordones',
-      material: prod.material || 'Sintético',
-      materialPlantilla: prod.materialPlantilla || 'PVC',
-      porcentajeDescuento: prod.porcentajeDescuento || 0,
-      imagenUrl: prod.imagenUrl || '',
-      genero: prod.genero || 'HOMBRE',
-      esOferta: prod.esOferta || false,
-      categoria: prod.categoria ? { id: prod.categoria.id, nombre: prod.categoria.nombre } : null
-    };
+    // Usamos el operador de propagación para una copia más limpia
+    // y nos aseguramos de que los valores nulos o indefinidos se conviertan en strings vacíos.
+    this.nuevoProducto = { ...this.obtenerProductoVacio(), ...prod };
+    this.nuevoProducto.descripcion = prod.descripcion ?? '';
+    this.nuevoProducto.marca = prod.marca ?? '';
+    this.nuevoProducto.color = prod.color ?? '';
+    this.nuevoProducto.talla = prod.talla ?? '';
   }
 
   eliminarProducto(id: number): void {

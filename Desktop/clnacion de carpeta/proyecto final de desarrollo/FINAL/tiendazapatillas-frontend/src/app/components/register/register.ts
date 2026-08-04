@@ -32,8 +32,14 @@ export class RegisterComponent {
   mensajeExito = '';
 
   onRegister(): void {
-    if (!this.nuevoUsuario.username || !this.nuevoUsuario.password || !this.nuevoUsuario.correo) {
-      this.mensajeError = 'Por favor completa todos los campos obligatorios.';
+    const { username, password, correo } = this.nuevoUsuario;
+    if (!username || !password || !correo) {
+      let camposFaltantes = [];
+      if (!username) camposFaltantes.push('usuario');
+      if (!password) camposFaltantes.push('contraseña');
+      if (!correo) camposFaltantes.push('correo');
+      
+      this.mensajeError = `Por favor completa los campos obligatorios: ${camposFaltantes.join(', ')}.`;
       return;
     }
 

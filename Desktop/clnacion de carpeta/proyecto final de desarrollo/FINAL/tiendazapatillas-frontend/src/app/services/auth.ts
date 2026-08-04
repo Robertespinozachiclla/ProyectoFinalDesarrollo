@@ -24,6 +24,8 @@ export interface AuthResponse {
   rol?: string;
   role?: string;
   username?: string;
+  nombreUsuario?: string;
+  email?: string;
   mensaje?: string;
 }
 
@@ -51,6 +53,14 @@ export class AuthService {
         const userRol = res.rol || res.role;
         if (userRol) {
           localStorage.setItem('role', userRol.toUpperCase());
+        }
+
+        // 🟢 Guarda el nombre y el email del usuario
+        if (res.nombreUsuario) {
+          localStorage.setItem('nombreUsuario', res.nombreUsuario);
+        }
+        if (res.email) {
+          localStorage.setItem('email', res.email);
         }
       })
     );

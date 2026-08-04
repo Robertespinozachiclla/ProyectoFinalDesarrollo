@@ -40,6 +40,18 @@ export class LoginComponent {
     localStorage.setItem('token', res.token);
     const rol = (res.rol || res.role || '').toUpperCase();
     localStorage.setItem('role', rol);
+    if (res.nombreUsuario) {
+      localStorage.setItem('nombreUsuario', res.nombreUsuario);
+    }
+    if (res.email) {
+      localStorage.setItem('email', res.email);
+    }
+    if (res.telefono) {
+      localStorage.setItem('telefono', res.telefono);
+    }
+    if (res.direccion) {
+      localStorage.setItem('direccion', res.direccion);
+    }
 
     // 🟢 REDIRECCIÓN SEGÚN EL ROL
     if (rol === 'ADMIN' || rol === 'ROLE_ADMIN') {

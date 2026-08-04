@@ -68,6 +68,14 @@ export class HomeComponent implements OnInit {
     rol: ''
   };
 
+  // Modals de cuenta y tema
+  mostrarModalMiCuenta = false;
+  mostrarModalConfiguracion = false;
+  mostrarModalHistorial = false;
+  historialPedidos: any[] = [];
+  cargandoHistorial = false;
+  temaOscuro = false;
+
   // SVG genérico de respaldo
   readonly defaultImage: string =
     'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" fill="%23cccccc" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/></svg>';
@@ -80,6 +88,10 @@ export class HomeComponent implements OnInit {
     });
     // Cargar favoritos del localStorage
     this.cargarFavoritosLocales();
+
+    // Cargar tema
+    this.temaOscuro = localStorage.getItem('temaOscuro') === 'true';
+    this.aplicarTema();
   }
 
   verificarAutenticacion(): void {
@@ -87,15 +99,24 @@ export class HomeComponent implements OnInit {
     const nombreUsuario = localStorage.getItem('nombreUsuario');
     const emailUsuario = localStorage.getItem('email');
     const rolUsuario = localStorage.getItem('role');
+    const telefonoUsuario = localStorage.getItem('telefono');
+    const direccionUsuario = localStorage.getItem('direccion');
 
     if (token) {
       this.usuarioLogueado = true;
       this.datosUsuario.nombre = nombreUsuario || 'Usuario';
       this.datosUsuario.email = emailUsuario || '';
       this.datosUsuario.rol = rolUsuario || 'CLIENTE';
+
+      // Auto-fill checkout client data
+      this.datosCliente.nombre = nombreUsuario || '';
+      this.datosCliente.email = emailUsuario || '';
+      this.datosCliente.telefono = telefonoUsuario || '';
+      this.datosCliente.direccion = direccionUsuario || '';
     } else {
       this.usuarioLogueado = false;
     }
+    this.cargarFavoritosLocales();
   }
 
   cargarTodo(): void {
@@ -171,9 +192,15 @@ export class HomeComponent implements OnInit {
   // FAVORITOS
   // ────────────────────────────────────
 
+  obtenerKeyFavoritos(): string {
+    const email = localStorage.getItem('email');
+    return email ? `favoritos_zapatillas_${email}` : 'favoritos_zapatillas_invitado';
+  }
+
   cargarFavoritosLocales(): void {
     try {
-      const data = localStorage.getItem('favoritos_zapatillas');
+      const key = this.obtenerKeyFavoritos();
+      const data = localStorage.getItem(key);
       this.favoritos = data ? JSON.parse(data) : [];
     } catch {
       this.favoritos = [];
@@ -181,7 +208,8 @@ export class HomeComponent implements OnInit {
   }
 
   guardarFavoritosLocales(): void {
-    localStorage.setItem('favoritos_zapatillas', JSON.stringify(this.favoritos));
+    const key = this.obtenerKeyFavoritos();
+    localStorage.setItem(key, JSON.stringify(this.favoritos));
   }
 
   esFavorito(prod: Producto): boolean {
@@ -307,8 +335,56 @@ export class HomeComponent implements OnInit {
 
   irAMiCuenta(): void {
     this.cerrarPanelCuenta();
-    // Aquí puedes navegar a una página de perfil si la tienes
-    // this.router.navigate(['/mi-cuenta']);
+    this.mostrarModalMiCuenta = true;
+  }
+
+  abrirConfiguracion(): void {
+    this.cerrarPanelCuenta();
+    this.mostrarModalConfiguracion = true;
+  }
+
+  abrirHistorial(): void {
+    this.cerrarPanelCuenta();
+    this.mostrarModalHistorial = true;
+    this.cargarHistorialPedidos();
+  }
+
+  cargarHistorialPedidos(): void {
+    this.cargandoHistorial = true;
+    this.carritoService.obtenerPedidos().subscribe({
+      next: (pedidos) => {
+        const email = localStorage.getItem('email');
+        if (email) {
+          this.historialPedidos = pedidos.filter(p => p.cliente && p.cliente.correo === email);
+        } else {
+          this.historialPedidos = [];
+        }
+        this.cargandoHistorial = false;
+      },
+      error: (err) => {
+        console.error('Error al obtener historial de pedidos:', err);
+        this.cargandoHistorial = false;
+      }
+    });
+  }
+
+  toggleTema(): void {
+    this.temaOscuro = !this.temaOscuro;
+    localStorage.setItem('temaOscuro', String(this.temaOscuro));
+    this.aplicarTema();
+    this.cerrarPanelCuenta();
+  }
+
+  aplicarTema(): void {
+    if (this.temaOscuro) {
+      document.body.classList.add('dark-theme');
+    } else {
+      document.body.classList.remove('dark-theme');
+    }
+  }
+
+  guardarTemaLocal(): void {
+    localStorage.setItem('temaOscuro', String(this.temaOscuro));
   }
 
   cerrarSesion(): void {
@@ -316,8 +392,12 @@ export class HomeComponent implements OnInit {
     localStorage.removeItem('role');
     localStorage.removeItem('nombreUsuario');
     localStorage.removeItem('email');
+    localStorage.removeItem('telefono');
+    localStorage.removeItem('direccion');
     this.usuarioLogueado = false;
     this.mostrarPanelCuenta = false;
+    this.datosCliente = { nombre: '', email: '', telefono: '', direccion: '' };
+    this.cargarFavoritosLocales();
     this.router.navigate(['/login']);
   }
 

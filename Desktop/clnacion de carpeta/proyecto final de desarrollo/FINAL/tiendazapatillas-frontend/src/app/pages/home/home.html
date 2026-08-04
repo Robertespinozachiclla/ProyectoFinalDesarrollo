@@ -200,15 +200,15 @@
         <i class="bi bi-person-circle"></i>
         <span>Mi cuenta</span>
       </button>
-      <button class="account-menu-item">
+      <button class="account-menu-item" (click)="abrirConfiguracion()">
         <i class="bi bi-gear"></i>
         <span>Configuración</span>
       </button>
-      <button class="account-menu-item">
+      <button class="account-menu-item" (click)="toggleTema()">
         <i class="bi bi-moon-stars"></i>
-        <span>Tema</span>
+        <span>Tema (Oscuro/Claro)</span>
       </button>
-      <button class="account-menu-item">
+      <button class="account-menu-item" (click)="abrirHistorial()">
         <i class="bi bi-clock-history"></i>
         <span>Historial de compra</span>
       </button>
@@ -567,5 +567,132 @@
       </button>
     </div>
 
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL MI CUENTA
+═══════════════════════════════════════════════════════ -->
+<div class="custom-modal-overlay" *ngIf="mostrarModalMiCuenta" (click)="mostrarModalMiCuenta = false">
+  <div class="custom-modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-custom-header">
+      <h4 class="fw-bold m-0"><i class="bi bi-person-bounding-box me-2"></i> Mi Cuenta</h4>
+      <button class="close-btn" (click)="mostrarModalMiCuenta = false">✕</button>
+    </div>
+    <div class="modal-custom-body">
+      <div class="text-center mb-4">
+        <div class="profile-avatar-large">
+          <span>{{ datosUsuario.nombre.charAt(0).toUpperCase() }}</span>
+        </div>
+        <h5 class="fw-bold mt-2">{{ datosUsuario.nombre }}</h5>
+        <span class="badge bg-secondary">{{ datosUsuario.rol }}</span>
+      </div>
+
+      <div class="user-details-list">
+        <div class="detail-row">
+          <div class="detail-label"><i class="bi bi-person me-2"></i>Nombre Completo</div>
+          <div class="detail-value">{{ datosCliente.nombre || datosUsuario.nombre || 'No especificado' }}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><i class="bi bi-envelope me-2"></i>Correo Electrónico</div>
+          <div class="detail-value">{{ datosCliente.email || datosUsuario.email || 'No especificado' }}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><i class="bi bi-telephone me-2"></i>Teléfono</div>
+          <div class="detail-value">{{ datosCliente.telefono || 'No especificado' }}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><i class="bi bi-geo-alt me-2"></i>Dirección de Entrega</div>
+          <div class="detail-value">{{ datosCliente.direccion || 'No especificado' }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-custom-footer">
+      <button class="btn btn-dark w-100" (click)="mostrarModalMiCuenta = false">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL CONFIGURACIÓN
+═══════════════════════════════════════════════════════ -->
+<div class="custom-modal-overlay" *ngIf="mostrarModalConfiguracion" (click)="mostrarModalConfiguracion = false">
+  <div class="custom-modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-custom-header">
+      <h4 class="fw-bold m-0"><i class="bi bi-gear-fill me-2"></i> Configuración</h4>
+      <button class="close-btn" (click)="mostrarModalConfiguracion = false">✕</button>
+    </div>
+    <div class="modal-custom-body">
+      <p class="text-muted">Ajusta tus preferencias del sitio:</p>
+      
+      <div class="config-option-row">
+        <div>
+          <h6 class="fw-bold mb-0">Tema Oscuro</h6>
+          <small class="text-muted">Cambia la interfaz a colores oscuros.</small>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="temaOscuro" (change)="aplicarTema(); guardarTemaLocal()">
+        </div>
+      </div>
+
+      <div class="config-option-row mt-3">
+        <div>
+          <h6 class="fw-bold mb-0">Limpiar Favoritos</h6>
+          <small class="text-muted">Elimina todas las zapatillas de tu lista.</small>
+        </div>
+        <button class="btn btn-outline-danger btn-sm" (click)="favoritos = []; guardarFavoritosLocales(); mostrarModalConfiguracion = false">
+          Limpiar
+        </button>
+      </div>
+    </div>
+    <div class="modal-custom-footer">
+      <button class="btn btn-dark w-100" (click)="mostrarModalConfiguracion = false">Listo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL HISTORIAL DE COMPRA
+═══════════════════════════════════════════════════════ -->
+<div class="custom-modal-overlay" *ngIf="mostrarModalHistorial" (click)="mostrarModalHistorial = false">
+  <div class="custom-modal-content modal-large" (click)="$event.stopPropagation()">
+    <div class="modal-custom-header">
+      <h4 class="fw-bold m-0"><i class="bi bi-clock-history me-2"></i> Historial de Compras</h4>
+      <button class="close-btn" (click)="mostrarModalHistorial = false">✕</button>
+    </div>
+    <div class="modal-custom-body">
+      <!-- Cargando -->
+      <div *ngIf="cargandoHistorial" class="text-center py-4">
+        <div class="spinner-border text-danger" role="status"></div>
+        <p class="mt-2 text-muted">Cargando tus pedidos...</p>
+      </div>
+
+      <!-- Sin Pedidos -->
+      <div *ngIf="!cargandoHistorial && historialPedidos.length === 0" class="text-center py-4 text-muted">
+        <i class="bi bi-cart-x fs-1"></i>
+        <h5 class="fw-bold mt-2">Aún no tienes compras</h5>
+        <p>Tus pedidos finalizados aparecerán aquí para que los rastrees.</p>
+      </div>
+
+      <!-- Lista de Pedidos -->
+      <div *ngIf="!cargandoHistorial && historialPedidos.length > 0" class="order-history-list">
+        <div class="order-card p-3 mb-3 border rounded" *ngFor="let pedido of historialPedidos">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold text-dark">Pedido #{{ pedido.id }}</span>
+            <span class="badge text-dark bg-warning" [class.bg-warning]="pedido.estado === 'PENDIENTE'" [class.bg-success]="pedido.estado !== 'PENDIENTE'">{{ pedido.estado }}</span>
+          </div>
+          <div class="small text-muted mb-2">
+            <strong>Fecha:</strong> {{ pedido.createdAt | date:'dd/MM/yyyy, h:mm a' }}
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="text-muted">Monto Total:</span>
+            <span class="fw-bold text-danger">S/ {{ pedido.total }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-custom-footer">
+      <button class="btn btn-dark w-100" (click)="mostrarModalHistorial = false">Cerrar</button>
+    </div>
   </div>
 </div>

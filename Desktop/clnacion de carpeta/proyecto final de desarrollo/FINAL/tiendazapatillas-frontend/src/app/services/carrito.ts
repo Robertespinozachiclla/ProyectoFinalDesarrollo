@@ -104,13 +104,14 @@ export class CarritoService {
       clienteGuardado = await firstValueFrom(
         this.http.post<any>(this.apiClientes, {
           nombre: clienteData.nombre,
-          email: clienteData.email,
+          apellido: '',
+          correo: clienteData.email,
           telefono: clienteData.telefono || '',
           direccion: clienteData.direccion || ''
         })
       );
     } catch (e) {
-      console.warn('No se pudo crear cliente en backend, continuando pedido general');
+      console.warn('No se pudo crear cliente en backend, continuando pedido general', e);
     }
 
     // 2. Guardar Pedido
@@ -143,5 +144,9 @@ export class CarritoService {
     this.vaciarCarrito();
 
     return pedidoCreado;
+  }
+
+  obtenerPedidos(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiPedidos);
   }
 }
