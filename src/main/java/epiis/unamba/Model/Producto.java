@@ -56,7 +56,7 @@ public class Producto {
     private String imagenUrl;
 
     @Column(length = 10)
-    private String genero; // HOMBRE, MUJER, UNISEX
+    private String genero; 
 
     @Column(name = "es_oferta")
     private Boolean esOferta = false;

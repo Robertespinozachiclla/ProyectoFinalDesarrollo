@@ -52,7 +52,11 @@ public class AuthController {
                 Map.of(
                     "mensaje", "Inicio de sesión exitoso",
                     "token", response.getToken(),
-                    "rol", response.getRol() != null ? response.getRol() : "" // Opcional por si devuelves el rol
+                    "rol", response.getRol() != null ? response.getRol() : "",
+                    "nombreUsuario", response.getNombre() != null ? response.getNombre() : "",
+                    "email", response.getEmail() != null ? response.getEmail() : "",
+                    "telefono", response.getTelefono() != null ? response.getTelefono() : "",
+                    "direccion", response.getDireccion() != null ? response.getDireccion() : ""
                 )
             );
             

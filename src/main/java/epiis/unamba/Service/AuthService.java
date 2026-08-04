@@ -10,6 +10,7 @@ import epiis.unamba.DTO.RegisterRequest;
 import epiis.unamba.model.Cliente;
 import epiis.unamba.model.Rol;
 import epiis.unamba.model.Usuario;
+import epiis.unamba.repository.ClienteRepository;
 import epiis.unamba.repository.UsuarioRepository;
 
 @Service
@@ -17,6 +18,7 @@ public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
     private final UsuarioService usuarioService;
+    private final ClienteRepository clienteRepository;
     private final ClienteService clienteService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -24,12 +26,14 @@ public class AuthService {
     public AuthService(
             UsuarioRepository usuarioRepository,
             UsuarioService usuarioService,
+            ClienteRepository clienteRepository,
             ClienteService clienteService,
             JwtService jwtService,
             AuthenticationManager authenticationManager) {
 
         this.usuarioRepository = usuarioRepository;
         this.usuarioService = usuarioService;
+        this.clienteRepository = clienteRepository;
         this.clienteService = clienteService;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
@@ -76,10 +80,18 @@ public class AuthService {
 
         String token = jwtService.generarToken(usuario);
 
+        // 🟢 Buscar el cliente asociado por el correo (que es el username)
+        Cliente cliente = clienteRepository.findByCorreo(usuario.getUsername()).orElse(null);
+
         return new AuthResponse(
                 token,
                 usuario.getUsername(),
-                usuario.getRol().name());
+                usuario.getRol().name(),
+                // 🟢 Devolver nombre, email, telefono y direccion si el cliente existe
+                cliente != null ? cliente.getNombre() : usuario.getUsername(),
+                cliente != null ? cliente.getCorreo() : usuario.getUsername(),
+                cliente != null ? cliente.getTelefono() : "",
+                cliente != null ? cliente.getDireccion() : "");
     }
 
 }

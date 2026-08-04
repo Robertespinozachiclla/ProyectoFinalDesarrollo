@@ -1,7 +1,6 @@
 package epiis.unamba.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import epiis.unamba.model.Producto;
@@ -28,12 +27,7 @@ public class ProductoService {
     }
 
     public List<String> listarMarcas() {
-        return prodRepo.findAll().stream()
-                .map(Producto::getMarca)
-                .filter(m -> m != null && !m.isBlank())
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+        return prodRepo.findDistinctMarcas();
     }
 
     public List<Producto> listarPorMarca(String marca) {
